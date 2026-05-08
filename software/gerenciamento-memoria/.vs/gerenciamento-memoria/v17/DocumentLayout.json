@@ -3,15 +3,15 @@
   "WorkspaceRootPath": "C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|c:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|c:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|c:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\comunication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\comunication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|solutionrelative:comunication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -51,8 +51,7 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-07T17:37:22.278Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -65,8 +64,7 @@
               "ViewState": "AgIAAEUAAAAAAAAAAAAAAFsAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-07T18:43:54.294Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -104,8 +102,7 @@
               "RelativeToolTip": "Form1.Designer.cs",
               "ViewState": "AgIAADAAAAAAAAAAAIAwwD8AAABKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-07T17:51:23.602Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-07T17:51:23.602Z"
             }
           ]
         }
