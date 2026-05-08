@@ -10,70 +10,122 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace gerenciamento_memoria {
-    public partial class Form1 : Form {
-        Comunicacao comunicacao;
+    public partial class App : Form {
+        public Comunication com;
+        private string default_port = null;
+        private List<int> data = new List<int>();
 
-        public Form1() {
+        public App() {
             InitializeComponent();
-        }
-
-        public void SetCom(Comunicacao com) {
-            comunicacao = com;
-            
-            if (comunicacao.success) {
-                Console.WriteLine("Comunicação estabelecida com sucesso");
-                comunicacao.SetCallback(HandleMessage);
+            com = new Comunication();
+            RenderPortBox();
+            Console.WriteLine(default_port);
+            if (com.Open(default_port)) {
+                Console.WriteLine("Porta aberta: " + default_port);
+                com.SetReadCallback(PortMessageHandler);
             } else {
-                Console.WriteLine("Setando comunicação");
+                MessageBox.Show("Erro ao abrir porta " + default_port);
             }
         }
 
-        public void HandleMessage(object sender, SerialDataReceivedEventArgs e) {
+        // Handles the Port Sended Data
+        public void PortMessageHandler(object sender, SerialDataReceivedEventArgs e) {
             SerialPort sp = (SerialPort)sender;
-            string data = sp.ReadExisting();
-            UpdateForm1(data);
-            Console.WriteLine(data);
+            string dt = sp.ReadExisting();
+            ReadData(dt);
         }
 
-        private void UpdateForm1(string data) {
-            if (data.Length > 1) {
-                if (textBox1.InvokeRequired) {
-                    textBox1.Invoke(new Action(() => textBox1.Text+=data));
-                } else {
-                    textBox1.Text+=data;
+        // Main pool data
+        private void ReadData(string value) {
+            // Cancel if value is empty or the window hasn't started.
+            if (string.IsNullOrEmpty(value)) return;
+            if (this.IsDisposed || !this.IsHandleCreated) return;
+            // Read the data in UI Thread
+            this.BeginInvoke(new Action(() => {
+                try {
+                    if (value.Contains("\n")) {
+                        msgBox.AppendText(value);
+                    } else {
+                        char v = value[0];
+                        if (!data.Contains(v)) {
+                            Console.WriteLine("Received: " + v);
+                            data.Add(v);
+                        }
+                    }
+                } catch (Exception ex) {
+                    Console.WriteLine("Error in ReadData: " + ex.Message);
                 }
-            } else {
+            }));
+        }
 
+        // Send Data to Device
+        private void SendData(object sender, EventArgs e) {
+            string value = cmdBox.Text;
+            cmdBox.Clear();
+            if (!string.IsNullOrEmpty(value)) com.Write(value);
+        }
+
+        private void cmdBox_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Enter) {
+                SendData(sender, e);
+                e.SuppressKeyPress = true;
             }
         }
 
-        public void button1_Click(object sender, EventArgs e) {
-            dataGridView1.Rows.Add("0", "-", "-");
-            Console.WriteLine("Linha qualquer");
+        // Render the PortBox combobox
+        private void RenderPortBox() {
+            string[] ports = com.GetPortList();
+            foreach (string port in ports) {
+                if (!portBox.Items.Contains(port)) portBox.Items.Add(port);
+            }
+            // If found port, select it; Else, show notification.
+            if (default_port == null && ports.Length > 0) {
+                portBox.SelectedIndex = 0;
+                default_port = portBox.SelectedItem as string;
+            }
         }
 
-        private void textBox2_TextChanged(object sender, EventArgs e) {
+        // Update the PortBox every time that a device is detected.
+        //protected override void WndProc(ref Message m) {
+        //    base.WndProc(ref m);
+        //    // Connected an USB
+        //    if (m.Msg == 0x0219) {
+        //        RenderPortBox();
+        //    }
+        //}
 
+        public void addRowBtn_Click(object sender, EventArgs e) {
+            dataGrid.Rows.Add("x", "-", "-");
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) {
-            
-        }
-
-        private void button3_Click(object sender, EventArgs e) {
-            if (dataGridView1.SelectedRows.Count > 0) {
-                // Limpa todas as colunas, começando pelas últimas
-                // Assim, ele garante que chegará ao índice 0 mesmo que a pilha esteja sendo reduzida a cada execução do for
-                for (int i = dataGridView1.SelectedRows.Count-1; i >= 0 ; i--) {
-                    dataGridView1.Rows.RemoveAt(dataGridView1.SelectedRows[i].Index);
+        // Clear rows button
+        private void rmvRowBtn_Click(object sender, EventArgs e) {
+            if (dataGrid.SelectedRows.Count > 0) {
+                // Clear all rows, starting by the last
+                // This way, the rows will be removed without index error
+                for (int i = dataGrid.SelectedRows.Count - 1; i >= 0; i--) {
+                    dataGrid.Rows.RemoveAt(dataGrid.SelectedRows[i].Index);
                 }
             } else {
                 MessageBox.Show("Selecione pelo menos uma linha para remover.");
             }
         }
 
-        private void label1_Click(object sender, EventArgs e) {
-            
+        // When the user finish edit a cell
+        private void dataGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
+            int row = e.RowIndex;
+            if (row < 0) return;
+            string value = dataGrid.Rows[row].Cells[0].Value?.ToString();
+            // Accepts the hex notation
+            if (value.Contains("x")) value = value.Split('x')[1];
+            try {
+                if (int.TryParse(value, out int address)) {
+                    dataGrid.Rows[row].Cells[1].Value = data[address].ToString("X"); // Hex
+                    dataGrid.Rows[row].Cells[2].Value = data[address];              // Decimal
+                }
+            } catch {
+                return; // Couldn't read
+            }
         }
     }
 }
