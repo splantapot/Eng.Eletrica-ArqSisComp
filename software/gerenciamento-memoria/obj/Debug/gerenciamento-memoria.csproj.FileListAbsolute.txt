@@ -2,10 +2,10 @@ C:\dev\arq_sis_computacionais\software\gerenciamento-memoria\bin\Debug\gerenciam
 C:\dev\arq_sis_computacionais\software\gerenciamento-memoria\bin\Debug\gerenciamento-memoria.exe
 C:\dev\arq_sis_computacionais\software\gerenciamento-memoria\bin\Debug\gerenciamento-memoria.pdb
 C:\dev\arq_sis_computacionais\software\gerenciamento-memoria\obj\Debug\gerenciamento-memoria.csproj.AssemblyReference.cache
-C:\dev\arq_sis_computacionais\software\gerenciamento-memoria\obj\Debug\gerenciamento_memoria.Form1.resources
 C:\dev\arq_sis_computacionais\software\gerenciamento-memoria\obj\Debug\gerenciamento_memoria.Properties.Resources.resources
 C:\dev\arq_sis_computacionais\software\gerenciamento-memoria\obj\Debug\gerenciamento-memoria.csproj.GenerateResource.cache
 C:\dev\arq_sis_computacionais\software\gerenciamento-memoria\obj\Debug\gerenciamento-memoria.csproj.CoreCompileInputs.cache
 C:\dev\arq_sis_computacionais\software\gerenciamento-memoria\obj\Debug\gerenciamento-memoria.exe
 C:\dev\arq_sis_computacionais\software\gerenciamento-memoria\obj\Debug\gerenciamento-memoria.pdb
 C:\dev\arq_sis_computacionais\software\gerenciamento-memoria\obj\Debug\gerenciamento-memoria.exe.config
+C:\dev\arq_sis_computacionais\software\gerenciamento-memoria\obj\Debug\gerenciamento_memoria.App.resources

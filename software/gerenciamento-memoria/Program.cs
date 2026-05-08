@@ -11,13 +11,9 @@ namespace gerenciamento_memoria {
         /// </summary>
         [STAThread]
         static void Main() {
-            Comunicacao comMsp = new Comunicacao();
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Form1 app = new Form1();
-            app.SetCom(comMsp);
-            Application.Run(app);
+            Application.Run(new App());
         }
     }
 }

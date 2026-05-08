@@ -3,24 +3,24 @@
   "WorkspaceRootPath": "C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|c:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\comunicacao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|solutionrelative:comunicacao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|c:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|c:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|c:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\comunication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|solutionrelative:comunication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|solutionrelative:form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -42,41 +42,39 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAhAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-07T17:37:22.278Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Comunication.cs",
+              "DocumentMoniker": "C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Comunication.cs",
+              "RelativeDocumentMoniker": "Comunication.cs",
+              "ToolTip": "C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Comunication.cs",
+              "RelativeToolTip": "Comunication.cs",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAAAFsAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T18:43:54.294Z",
+              "IsPinned": true
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Comunicacao.cs",
-              "DocumentMoniker": "C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Comunicacao.cs",
-              "RelativeDocumentMoniker": "Comunicacao.cs",
-              "ToolTip": "C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Comunicacao.cs",
-              "RelativeToolTip": "Comunicacao.cs",
-              "ViewState": "AgIAADkAAAAAAAAAAAAawEoAAAA+AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-07T18:43:54.294Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
               "ToolTip": "C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Form1.cs",
               "RelativeToolTip": "Form1.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAAqwC0AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAAAAkAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-06T01:04:57.912Z",
               "IsPinned": true,
@@ -84,7 +82,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "Form1.cs [Design]",
               "DocumentMoniker": "C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
@@ -96,16 +94,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "Form1.Designer.cs",
               "DocumentMoniker": "C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Form1.Designer.cs",
               "RelativeDocumentMoniker": "Form1.Designer.cs",
               "ToolTip": "C:\\dev\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Form1.Designer.cs",
               "RelativeToolTip": "Form1.Designer.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAADAAAAAAAAAAAIAwwD8AAABKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-07T17:51:23.602Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-07T17:51:23.602Z"
             }
           ]
         }
