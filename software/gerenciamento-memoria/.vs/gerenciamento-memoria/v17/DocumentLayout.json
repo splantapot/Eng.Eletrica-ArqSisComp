@@ -3,11 +3,11 @@
   "WorkspaceRootPath": "C:\\Users\\Jo\u00E3o\\workspace\\ufpi\\arq_sis_computacionais\\software\\gerenciamento-memoria\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|C:\\Users\\Jo\u00E3o\\workspace\\ufpi\\arq_sis_computacionais\\software\\gerenciamento-memoria\\comunicacao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|solutionrelative:comunicacao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Jo\u00E3o\\workspace\\ufpi\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Comunicacao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Comunicacao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|c:\\users\\jo\u00E3o\\workspace\\ufpi\\arq_sis_computacionais\\software\\gerenciamento-memoria\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|C:\\Users\\Jo\u00E3o\\workspace\\ufpi\\arq_sis_computacionais\\software\\gerenciamento-memoria\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BE7BDEE5-4113-46A5-B6BF-C1338B0A55A0}|gerenciamento-memoria.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -30,8 +30,16 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 4,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -47,20 +55,6 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Comunicacao.cs",
-              "DocumentMoniker": "C:\\Users\\Jo\u00E3o\\workspace\\ufpi\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Comunicacao.cs",
-              "RelativeDocumentMoniker": "Comunicacao.cs",
-              "ToolTip": "C:\\Users\\Jo\u00E3o\\workspace\\ufpi\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Comunicacao.cs",
-              "RelativeToolTip": "Comunicacao.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-07T18:43:54.294Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\Jo\u00E3o\\workspace\\ufpi\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Form1.cs",
@@ -68,18 +62,20 @@
               "ToolTip": "C:\\Users\\Jo\u00E3o\\workspace\\ufpi\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Form1.cs",
               "RelativeToolTip": "Form1.cs",
               "ViewState": "AgIAADEAAAAAAAAAAAA0wDsAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003525|",
               "WhenOpened": "2026-05-06T01:04:57.912Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Comunicacao.cs",
+              "DocumentMoniker": "C:\\Users\\Jo\u00E3o\\workspace\\ufpi\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Comunicacao.cs",
+              "RelativeDocumentMoniker": "Comunicacao.cs",
+              "ToolTip": "C:\\Users\\Jo\u00E3o\\workspace\\ufpi\\arq_sis_computacionais\\software\\gerenciamento-memoria\\Comunicacao.cs",
+              "RelativeToolTip": "Comunicacao.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-12T00:43:22.502Z"
             },
             {
               "$type": "Document",

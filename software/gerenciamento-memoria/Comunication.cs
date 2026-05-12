@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace gerenciamento_memoria {
-    public class Comunicacao {
+    public class Comunication {
         string name;
         string message;
 
@@ -19,19 +19,13 @@ namespace gerenciamento_memoria {
         const int WriteTimeout = 500;
 
         public bool success = true;
-
-        static bool _continue;
         static SerialPort _serialPort;
 
-        public Comunicacao() {
-            StringComparer stringComparer = StringComparer.OrdinalIgnoreCase;
-            Thread readThread = new Thread(Read);
-
+        public Comunication() {
             // Create a new SerialPort object with default settings.
             _serialPort = new SerialPort();
 
-            // Allow the user to set the appropriate properties.
-            _serialPort.PortName = SetPortName(_serialPort.PortName);
+            // Setup the properties
             _serialPort.BaudRate = baudRate;
             _serialPort.Parity = parity;
             _serialPort.DataBits = dataBits;
@@ -40,15 +34,6 @@ namespace gerenciamento_memoria {
             // Set the read/write timeouts
             _serialPort.ReadTimeout = ReadTimeout;
             _serialPort.WriteTimeout = WriteTimeout;
-
-            try {
-                _serialPort.Open();
-                success = true;
-            } catch {
-                Console.WriteLine("Não foi possível abrir a porta serial. Verifique as configurações e tente novamente.");
-                success = false;
-                return;
-            }
 
             /*readThread.Start();
             _continue = true;
@@ -72,37 +57,39 @@ namespace gerenciamento_memoria {
             _serialPort.Close();*/
         }
 
-        public void SetCallback(SerialDataReceivedEventHandler callback) {
+        /* ====================================  */
+        /* Get all COMx Ports                    */
+        /* ====================================  */
+        public string[] GetPortList() {
+            return SerialPort.GetPortNames();
+        }
+
+        /* ====================================  */
+        /* Open the COMx Port                    */
+        /* ====================================  */
+        public bool Open(string port) {
+            try {
+                _serialPort.PortName = port;
+                _serialPort.Open();
+                return true;
+            } catch {
+                Console.WriteLine("Não foi possível abrir a porta serial. Verifique as configurações e tente novamente.");
+                return false;
+            }
+        }
+
+        /* ====================================  */
+        /* Prepares the COMx Port to read        */
+        /* ====================================  */
+        public void SetReadCallback(SerialDataReceivedEventHandler callback) {
             _serialPort.DataReceived += callback;
         }
 
-        public static void Read() {
-            while (_continue) {
-                try {
-                    string message = _serialPort.ReadLine();
-                    Console.WriteLine(message);
-                } catch (TimeoutException) { }
-            }
+        /* ====================================  */
+        /* Writes to COMx Port                   */
+        /* ====================================  */
+        public void Write(string data) {
+            _serialPort.WriteLine(data);
         }
-
-        // Display Port values and prompt user to enter a port.
-        public static string SetPortName(string defaultPortName) {
-            string portName;
-
-            Console.WriteLine("Available Ports:");
-            foreach (string s in SerialPort.GetPortNames()) {
-                Console.WriteLine("   {0}", s);
-            }
-
-            Console.Write("Enter COM port value (Default: {0}): ", defaultPortName);
-            portName = Console.ReadLine();
-
-            if (portName == "" || !(portName.ToLower()).StartsWith("com")) {
-                portName = defaultPortName;
-            }
-            return portName;
-        }
-
-
     }
 }
