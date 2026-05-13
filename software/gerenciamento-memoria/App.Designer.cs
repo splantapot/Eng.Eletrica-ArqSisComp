@@ -238,7 +238,7 @@
             // sendCmdBtn
             // 
             this.sendCmdBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.sendCmdBtn.Location = new System.Drawing.Point(249, 52);
+            this.sendCmdBtn.Location = new System.Drawing.Point(243, 52);
             this.sendCmdBtn.Name = "sendCmdBtn";
             this.sendCmdBtn.Size = new System.Drawing.Size(76, 28);
             this.sendCmdBtn.TabIndex = 5;
@@ -253,7 +253,7 @@
             this.cmdBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdBox.Location = new System.Drawing.Point(11, 25);
             this.cmdBox.Name = "cmdBox";
-            this.cmdBox.Size = new System.Drawing.Size(314, 21);
+            this.cmdBox.Size = new System.Drawing.Size(308, 21);
             this.cmdBox.TabIndex = 1;
             this.cmdBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmdBox_KeyDown);
             // 
