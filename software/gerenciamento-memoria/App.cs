@@ -44,7 +44,7 @@ namespace gerenciamento_memoria {
             this.BeginInvoke(new Action(() => {
                 try {
                     if (value.Contains("\n")) {
-                        msgBox.AppendText(value);
+                        textboxMsg.AppendText(value);
                     } else {
                         char v = value[0];
                         if (!data.Contains(v)) {
@@ -60,8 +60,8 @@ namespace gerenciamento_memoria {
 
         // Send Data to Device
         private void SendData(object sender, EventArgs e) {
-            string value = cmdBox.Text;
-            cmdBox.Clear();
+            string value = textboxCMD.Text;
+            textboxCMD.Clear();
             if (!string.IsNullOrEmpty(value)) com.Write(value);
         }
 
@@ -76,12 +76,12 @@ namespace gerenciamento_memoria {
         private void RenderPortBox() {
             string[] ports = com.GetPortList();
             foreach (string port in ports) {
-                if (!portBox.Items.Contains(port)) portBox.Items.Add(port);
+                if (!comboxPorts.Items.Contains(port)) comboxPorts.Items.Add(port);
             }
             // If found port, select it; Else, show notification.
             if (default_port == null && ports.Length > 0) {
-                portBox.SelectedIndex = 0;
-                default_port = portBox.SelectedItem as string;
+                comboxPorts.SelectedIndex = 0;
+                default_port = comboxPorts.SelectedItem as string;
             }
         }
 
@@ -95,16 +95,16 @@ namespace gerenciamento_memoria {
         //}
 
         public void addRowBtn_Click(object sender, EventArgs e) {
-            dataGrid.Rows.Add("x", "-", "-");
+            datagrid.Rows.Add("x", "-", "-");
         }
 
         // Clear rows button
         private void rmvRowBtn_Click(object sender, EventArgs e) {
-            if (dataGrid.SelectedRows.Count > 0) {
+            if (datagrid.SelectedRows.Count > 0) {
                 // Clear all rows, starting by the last
                 // This way, the rows will be removed without index error
-                for (int i = dataGrid.SelectedRows.Count - 1; i >= 0; i--) {
-                    dataGrid.Rows.RemoveAt(dataGrid.SelectedRows[i].Index);
+                for (int i = datagrid.SelectedRows.Count - 1; i >= 0; i--) {
+                    datagrid.Rows.RemoveAt(datagrid.SelectedRows[i].Index);
                 }
             } else {
                 MessageBox.Show("Selecione pelo menos uma linha para remover.");
@@ -115,13 +115,13 @@ namespace gerenciamento_memoria {
         private void dataGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
             int row = e.RowIndex;
             if (row < 0) return;
-            string value = dataGrid.Rows[row].Cells[0].Value?.ToString();
+            string value = datagrid.Rows[row].Cells[0].Value?.ToString();
             // Accepts the hex notation
             if (value.Contains("x")) value = value.Split('x')[1];
             try {
                 if (int.TryParse(value, out int address)) {
-                    dataGrid.Rows[row].Cells[1].Value = data[address].ToString("X"); // Hex
-                    dataGrid.Rows[row].Cells[2].Value = data[address];              // Decimal
+                    datagrid.Rows[row].Cells[1].Value = data[address].ToString("X"); // Hex
+                    datagrid.Rows[row].Cells[2].Value = data[address];              // Decimal
                 }
             } catch {
                 return; // Couldn't read
