@@ -1,0 +1,11 @@
+Configurando CCS para gravar o MSP430
+https://www.youtube.com/watch?v=MZ3thX9n__Q
+
+Criação do projeto do CCS e uso das bibliotecas propostas
+https://www.youtube.com/watch?v=bvZvOXVMXMU
+
+Criação de projeto no CCS para o microcontrolador MSP430
+https://www.youtube.com/watch?v=dHVTYAu_5J4
+
+Meu canal do YouTube
+@evertons

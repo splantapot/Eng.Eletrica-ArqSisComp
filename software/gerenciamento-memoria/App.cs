@@ -64,7 +64,7 @@ namespace gerenciamento_memoria {
             textboxCMD.Clear();
             if (!string.IsNullOrEmpty(value)) com.Write(value);
         }
-
+         
         private void cmdBox_KeyDown(object sender, KeyEventArgs e) {
             if (e.KeyCode == Keys.Enter) {
                 SendData(sender, e);
