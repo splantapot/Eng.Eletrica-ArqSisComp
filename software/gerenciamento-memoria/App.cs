@@ -23,21 +23,24 @@ namespace gerenciamento_memoria {
             InitializeComponent();
             com = new Communication();
             RenderPortBox();
-
-            // Debug port
-            Console.WriteLine(default_port);
-            if (com.Open(default_port)) {
-                Console.WriteLine("Porta aberta: " + default_port);
-                com.SetReadCallback(PortMessageHandler);
-            } else {
-                Console.WriteLine("Porta não aberta.");
-                // MessageBox.Show("Erro ao abrir porta " + default_port);
-            }
+            TryDefaultInit();
         }
 
         /* ====================================  */
-        /* Tries to start communi                        */
+        /* Tries a default connection            */
         /* ====================================  */
+        private void TryDefaultInit() {
+            if (!com.isConnected) {
+                Console.WriteLine(default_port);
+                if (com.Open(default_port)) {
+                    Console.WriteLine("Porta aberta: " + default_port);
+                    com.SetReadCallback(PortMessageHandler);
+                } else {
+                    Console.WriteLine("Porta não aberta.");
+                    MessageBox.Show("Não foi possível encontrar uma porta para inicialização padrão.");
+                }
+            }
+        }
 
         /* ====================================  */
         /* Data Functions                        */
