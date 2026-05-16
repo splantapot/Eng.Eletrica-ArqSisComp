@@ -1,1 +1,0 @@
-C:\BSLDEMO-2.01c.exe -cCOM4 -m1 -ijevpr C:\Users\Administrador\workspace\Eng.Eletrica-ArqSisComp\recursos\Transmissor_USCIA_TX\Debug\Transmissor_USCIA_TX.txt

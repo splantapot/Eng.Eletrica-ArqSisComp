@@ -16,17 +16,24 @@ namespace gerenciamento_memoria {
         private List<int> data = new List<int>();
 
         public App() {
+            // APP Init, opening Comunication
             InitializeComponent();
             com = new Comunication();
             RenderPortBox();
+
+            // Depuração de porta padrão
             Console.WriteLine(default_port);
             if (com.Open(default_port)) {
                 Console.WriteLine("Porta aberta: " + default_port);
                 com.SetReadCallback(PortMessageHandler);
             } else {
-                MessageBox.Show("Erro ao abrir porta " + default_port);
+                // MessageBox.Show("Erro ao abrir porta " + default_port);
             }
         }
+
+        /* ====================================  */
+        /* Get all COMx Ports                    */
+        /* ====================================  */
 
         // Handles the Port Sended Data
         public void PortMessageHandler(object sender, SerialDataReceivedEventArgs e) {
@@ -50,6 +57,8 @@ namespace gerenciamento_memoria {
                         if (!data.Contains(v)) {
                             Console.WriteLine("Received: " + v);
                             data.Add(v);
+                        } else {
+                            Console.WriteLine(v);
                         }
                     }
                 } catch (Exception ex) {

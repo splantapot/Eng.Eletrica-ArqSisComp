@@ -1,4 +1,5 @@
 #include <msp430.h>
+
 #define tp BIT3 //transistor bc639 de programação
 #define tu BIT4 //transistor bc337 de utilização
 #define teste2
@@ -13,6 +14,7 @@ unsigned int i = 0; char j = 0;
 
 char* str = "ola, bom dia";
 void imprima(char* ptr_C);
+
 int main(void){
   //string1[7] = '\0';
   WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
@@ -52,7 +54,6 @@ int main(void){
 
   __bis_SR_register(/*LPM3_bits*/ + GIE);       // Enter LPM3 w/ int until Byte RXed
   char cont = 0;
-
 
   while(1){
 	  P1OUT ^= BIT0;

@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace gerenciamento_memoria {
     public class Comunication {
-        string name;
-        string message;
 
+        /* Default settings */
         const int baudRate = 38400;
         const int dataBits = 8;
         const Parity parity = Parity.None;
@@ -90,6 +89,23 @@ namespace gerenciamento_memoria {
         /* ====================================  */
         public void Write(string data) {
             _serialPort.WriteLine(data);
+        }
+
+        /* ====================================  */
+        /* Closes the COMx Port                  */
+        /* ====================================  */
+        public bool Close(string port) {
+            if (String.IsNullOrEmpty(_serialPort.PortName)) {
+                Console.WriteLine("Não é possível fechar porta nula.");
+                return false;
+            }
+            try {
+                _serialPort.Close();
+                return true;
+            } catch {
+                Console.WriteLine("Não foi possível fechar a porta serial.");
+                return false;
+            }
         }
     }
 }

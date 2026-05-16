@@ -24,16 +24,4 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>Library_release.lib</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Projeto4/Library_release.lib</locationURI>
-		</link>
-		<link>
-			<name>Temporizador.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Projeto4/Temporizador.h</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>
