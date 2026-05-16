@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace gerenciamento_memoria {
-    public class Comunication {
+    public class Communication {
 
         /* Default settings */
         const int baudRate = 38400;
@@ -17,10 +17,11 @@ namespace gerenciamento_memoria {
         const int ReadTimeout = 500;
         const int WriteTimeout = 500;
 
-        public bool success = true;
         static SerialPort _serialPort;
 
-        public Comunication() {
+        public bool isConnected = false;
+
+        public Communication() {
             // Create a new SerialPort object with default settings.
             _serialPort = new SerialPort();
 
@@ -64,6 +65,13 @@ namespace gerenciamento_memoria {
         }
 
         /* ====================================  */
+        /* Get status from COMx Port             */
+        /* ====================================  */
+        public bool IsConnectet() {
+            return _serialPort.IsOpen;
+        }
+
+        /* ====================================  */
         /* Open the COMx Port                    */
         /* ====================================  */
         public bool Open(string port) {
@@ -75,20 +83,6 @@ namespace gerenciamento_memoria {
                 Console.WriteLine("Não foi possível abrir a porta serial. Verifique as configurações e tente novamente.");
                 return false;
             }
-        }
-
-        /* ====================================  */
-        /* Prepares the COMx Port to read        */
-        /* ====================================  */
-        public void SetReadCallback(SerialDataReceivedEventHandler callback) {
-            _serialPort.DataReceived += callback;
-        }
-
-        /* ====================================  */
-        /* Writes to COMx Port                   */
-        /* ====================================  */
-        public void Write(string data) {
-            _serialPort.WriteLine(data);
         }
 
         /* ====================================  */
@@ -106,6 +100,27 @@ namespace gerenciamento_memoria {
                 Console.WriteLine("Não foi possível fechar a porta serial.");
                 return false;
             }
+        }
+
+        /* ====================================  */
+        /* Prepares the COMx Port to read        */
+        /* ====================================  */
+        public void SetReadCallback(SerialDataReceivedEventHandler callback) {
+            _serialPort.DataReceived += callback;
+        }
+
+        /* ====================================  */
+        /* Removes a COMx Port callback event    */
+        /* ====================================  */
+        public void RmvReadCallback(SerialDataReceivedEventHandler callback) {
+            _serialPort.DataReceived -= callback;
+        }
+
+        /* ====================================  */
+        /* Writes to COMx Port                   */
+        /* ====================================  */
+        public void Write(string data) {
+            _serialPort.WriteLine(data);
         }
     }
 }

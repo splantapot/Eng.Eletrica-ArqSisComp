@@ -11,28 +11,36 @@ using System.Windows.Forms;
 
 namespace gerenciamento_memoria {
     public partial class App : Form {
-        public Comunication com;
+        // Object that handles a communication
+        public Communication com;
+
+        // Default port, data_list and 
         private string default_port = null;
-        private List<int> data = new List<int>();
+        private readonly List<int> data_list = new List<int>();
 
         public App() {
             // APP Init, opening Comunication
             InitializeComponent();
-            com = new Comunication();
+            com = new Communication();
             RenderPortBox();
 
-            // Depuração de porta padrão
+            // Debug port
             Console.WriteLine(default_port);
             if (com.Open(default_port)) {
                 Console.WriteLine("Porta aberta: " + default_port);
                 com.SetReadCallback(PortMessageHandler);
             } else {
+                Console.WriteLine("Porta não aberta.");
                 // MessageBox.Show("Erro ao abrir porta " + default_port);
             }
         }
 
         /* ====================================  */
-        /* Get all COMx Ports                    */
+        /* Tries to start communi                        */
+        /* ====================================  */
+
+        /* ====================================  */
+        /* Data Functions                        */
         /* ====================================  */
 
         // Handles the Port Sended Data
@@ -54,9 +62,9 @@ namespace gerenciamento_memoria {
                         textboxMsg.AppendText(value);
                     } else {
                         char v = value[0];
-                        if (!data.Contains(v)) {
+                        if (!data_list.Contains(v)) {
                             Console.WriteLine("Received: " + v);
-                            data.Add(v);
+                            data_list.Add(v);
                         } else {
                             Console.WriteLine(v);
                         }
@@ -78,19 +86,6 @@ namespace gerenciamento_memoria {
             if (e.KeyCode == Keys.Enter) {
                 SendData(sender, e);
                 e.SuppressKeyPress = true;
-            }
-        }
-
-        // Render the PortBox combobox
-        private void RenderPortBox() {
-            string[] ports = com.GetPortList();
-            foreach (string port in ports) {
-                if (!comboxPorts.Items.Contains(port)) comboxPorts.Items.Add(port);
-            }
-            // If found port, select it; Else, show notification.
-            if (default_port == null && ports.Length > 0) {
-                comboxPorts.SelectedIndex = 0;
-                default_port = comboxPorts.SelectedItem as string;
             }
         }
 
@@ -129,12 +124,30 @@ namespace gerenciamento_memoria {
             if (value.Contains("x")) value = value.Split('x')[1];
             try {
                 if (int.TryParse(value, out int address)) {
-                    datagrid.Rows[row].Cells[1].Value = data[address].ToString("X"); // Hex
-                    datagrid.Rows[row].Cells[2].Value = data[address];              // Decimal
+                    datagrid.Rows[row].Cells[1].Value = data_list[address].ToString("X"); // Hex
+                    datagrid.Rows[row].Cells[2].Value = data_list[address];              // Decimal
                 }
             } catch {
                 return; // Couldn't read
             }
+        }
+
+        /* ====================================  */
+        /* Render the PortCombobox               */
+        /* ====================================  */
+        private void RenderPortBox() {
+            string[] ports = com.GetPortList();
+            this.BeginInvoke(new Action(() => {
+                foreach (string port in ports) {
+                    if (!comboxPorts.Items.Contains(port)) comboxPorts.Items.Add(port);
+                }
+
+                // If found only one port, select it.
+                if (default_port == null && ports.Length == 1) {
+                    comboxPorts.SelectedIndex = 0;
+                    default_port = comboxPorts.SelectedItem as string;
+                }
+            }));
         }
     }
 }
