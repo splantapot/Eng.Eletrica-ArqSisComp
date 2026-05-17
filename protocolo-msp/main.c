@@ -1,36 +1,40 @@
 #include <msp430.h> 
 
-#define tp BIT3 //transistor bc639 de programação
-#define tu BIT4 //transistor bc337 de utilização
+#define TP BIT3         //Transistor BC639: Programming
+#define TU BIT4         //Transistor BC337: Utility
 
-/**
- * main.c
- */
+
+/* Main */
 int main(void) {
 
-	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
-	DCOCTL = 60;   BCSCTL1 = 135;           //calibrado para 1 MHz
-    P1DIR = 0xFF;                             // All P1.x outputs
-    P1OUT = 0;                                // All P1.x reset
-    P2DIR = 0xFF;                             // All P2.x outputs
-    P2OUT = 0;                                // All P2.x reset
-    P1SEL = BIT1 + BIT2;                     // P1.1 = RXD, P1.2=TXD
-    P1SEL2 = BIT1 + BIT2;                     // P1.1 = RXD, P1.2=TXD
-    P3DIR = 0xFF;                             // All P3.x outputs
-    P3OUT = 0;                                // All P3.x reset
+	WDTCTL = WDTPW | WDTHOLD;               // Stop Watchdog Timer
+	DCOCTL = 60;   BCSCTL1 = 135;           // Calibrated for 1 MHz
 
-    P1REN = 0xFF; P2REN = 0xFF; P3REN = 0xFF;
-    P3OUT |= BIT0;  P2OUT &= ~BIT0;
+    P1DIR = 0xFF; P1OUT = 0; P1REN = 0xFF;  // P1 Reset + Resistor Enable
+    P2DIR = 0xFF; P2OUT = 0; P2REN = 0xFF;  // P2 Reset + Resistor Enable
+    P3DIR = 0xFF; P3OUT = 0; P3REN = 0xFF;  // P3 Reset + Resistor Enable
 
-    //configuração dos pinos para chaveamento
-    P1DIR &= ~BIT5;          //entrada
-    P1REN &= ~(BIT5 + BIT2); //sem resistor
-    P1REN |= BIT1;  //<<<<<<<<<habilita resistor de pullup no pino RX do msp<<<<<<<<<<<<<
-    P1DIR |= tp + tu;//saída
-    P1REN &= ~tp;       //sem resistor
-    P1OUT &= ~tp;       //nivel baixo para permitir a aplicaçao Rx/Tx do usuario
-    P1REN |= tu;        //resistor on
-    P1OUT |= tu;
+    P1SEL = BIT1 + BIT2;                    // P1.1 = RXD, P1.2=TXD
+    P1SEL2 = BIT1 + BIT2;                   // P1.1 = RXD, P1.2=TXD
+
+    // Setup for Transistors
+    P1DIR &= ~BIT5;                         // Input
+    P1REN &= ~(BIT5 + BIT2);                // Without Resistor
+    P1REN |= BIT1;                          // <<< Enable PullUp Resistor in MSP RX <<<
+    P1DIR |= TP + TU;                       // Output
+    P1REN &= ~TP;                           // Without Resistor
+    P1OUT &= ~TP;                           // Low for enable User RX TX
+    P1REN |= TU;                            // Turn on Resistor
+    P1OUT |= TU;                            // Turn on pin
 	
+    P3OUT = 0xA0;
+
+    unsigned int i = 0;
+    while (1) {
+        for (i = 0; i < 65000; i++);
+        //P1OUT ^= BIT0;
+        P1OUT = 0x00;
+    }
+
 	return 0;
 }
