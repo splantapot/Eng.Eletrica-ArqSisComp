@@ -7,6 +7,16 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace gerenciamento_memoria {
+    public enum TIME {
+        // IDLE Time to new message, with margin of error of 4
+        NEW_DATA = 14,
+        RAW_DATA = 6
+    }
+
+    public enum COM_MODE {
+        STRING, RAW_DATA
+    }
+
     public class Communication {
 
         /* Default settings */

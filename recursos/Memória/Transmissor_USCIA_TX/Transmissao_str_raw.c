@@ -79,7 +79,7 @@ int main(void){
 	if (passou_tempo(&t)) { reseta_temporizador(&t); P1OUT ^= BIT0;
 		switch (cont) {
 			case 0:
-			imprima("\r\n1)ELES\r\n\r\n1)ELES\r\n\r\n1)ELES\r\n\r\n1)ELES\r\n\r\n1)ELES\r\n\r\n1)ELES\r\n");//imprima("\r\n1)THEY\r\n");imprima("\r\n1)RGRGNRNGORNG\r\n");
+			imprima("\r\n1)ELES\r\n");//imprima("\r\n1)THEY\r\n");imprima("\r\n1)RGRGNRNGORNG\r\n");
 			break;
 			case 1:
 			imprima("\r\n2)VAO\r\n");

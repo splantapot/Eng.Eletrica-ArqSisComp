@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace gerenciamento_memoria {
@@ -16,13 +18,18 @@ namespace gerenciamento_memoria {
 
         // Default port, data_list and 
         private string default_port = null;
+
+        private readonly Stopwatch timer = new Stopwatch();
+        private COM_MODE com_mode = COM_MODE.STRING;
+
+        private readonly List<int> data_buffer = new List<int>();
         private readonly List<int> data_list = new List<int>();
 
         public App() {
-            // APP Init, opening Comunication
-            InitializeComponent();
-            com = new Communication();
-            RenderPortBox();
+            InitializeComponent();      // APP Init
+            com = new Communication();  // Instance Communication onj
+            timer.Start();              // Prepares Timer
+            RenderPortBox(true);        // Init setting
             TryDefaultInit();
         }
 
@@ -34,7 +41,7 @@ namespace gerenciamento_memoria {
                 Console.WriteLine(default_port);
                 if (com.Open(default_port)) {
                     Console.WriteLine("Porta aberta: " + default_port);
-                    com.SetReadCallback(PortMessageHandler);
+                    com.SetReadCallback(ReadData);
                 } else {
                     Console.WriteLine("Porta não aberta.");
                     MessageBox.Show("Não foi possível encontrar uma porta para inicialização padrão.");
@@ -47,16 +54,51 @@ namespace gerenciamento_memoria {
         /* ====================================  */
 
         // Handles the Port Sended Data
-        public void PortMessageHandler(object sender, SerialDataReceivedEventArgs e) {
+        public void ReadData(object sender, SerialDataReceivedEventArgs e) {
             SerialPort sp = (SerialPort)sender;
-            string dt = sp.ReadExisting();
-            ReadData(dt);
+            while (sp.BytesToRead > 0) {
+                char v = (char) sp.ReadByte();
+                long dt = timer.ElapsedTicks;
+                Console.WriteLine("dt: " + dt + " | " + v);
+                timer.Restart();
+            }
+
+            /*while (sp.BytesToRead > 0) {
+                int data = sp.ReadByte();
+                long dt = timer.ElapsedMilliseconds; //dt: time variation
+            
+                // Check if upcoming data is a new "data start".
+                if (dt >= (long) TIME.NEW_DATA) {
+                    // It's a "data start"
+                    RenderData(com_mode);
+                    data_buffer.Clear();
+                    com_mode = COM_MODE.STRING;
+                    timer.Restart();
+                } else if (dt >= (long) TIME.RAW_DATA) {
+                    // It's a list of raw data
+                    com_mode = COM_MODE.RAW_DATA;
+                }
+                //Console.WriteLine(data + " | " + dt);
+                data_buffer.Add(data);
+                timer.Restart();
+            }*/
+        }
+
+        private void RenderData(COM_MODE mode) {
+            switch (mode) {
+                case COM_MODE.STRING:
+                    Console.WriteLine("Str: " + string.Join(",", data_buffer));
+                    break;
+                case COM_MODE.RAW_DATA:
+                    Console.WriteLine("Raw: " + string.Join(",", data_buffer));
+                    break;
+            }
         }
 
         // Main pool data
-        private void ReadData(string value) {
+        private void ReadData2(int value) {
+            /*
             // Cancel if value is empty or the window hasn't started.
-            if (string.IsNullOrEmpty(value)) return;
             if (this.IsDisposed || !this.IsHandleCreated) return;
             // Read the data in UI Thread
             this.BeginInvoke(new Action(() => {
@@ -76,6 +118,7 @@ namespace gerenciamento_memoria {
                     Console.WriteLine("Error in ReadData: " + ex.Message);
                 }
             }));
+            */
         }
 
         // Send Data to Device
@@ -138,9 +181,10 @@ namespace gerenciamento_memoria {
         /* ====================================  */
         /* Render the PortCombobox               */
         /* ====================================  */
-        private void RenderPortBox() {
+        private void RenderPortBox(bool isInit = false) {
             string[] ports = com.GetPortList();
-            this.BeginInvoke(new Action(() => {
+
+            void RenderFunc() {
                 foreach (string port in ports) {
                     if (!comboxPorts.Items.Contains(port)) comboxPorts.Items.Add(port);
                 }
@@ -150,7 +194,14 @@ namespace gerenciamento_memoria {
                     comboxPorts.SelectedIndex = 0;
                     default_port = comboxPorts.SelectedItem as string;
                 }
-            }));
+            }
+
+            // Only can use Invoke after Form creation
+            if (!isInit) {
+                this.BeginInvoke(new Action(() => RenderFunc()));
+            } else {
+                RenderFunc();
+            }
         }
     }
 }
