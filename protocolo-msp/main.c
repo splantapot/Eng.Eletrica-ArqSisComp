@@ -1,8 +1,8 @@
-#include <msp430.h> 
+#include <msp430.h>
+#include "intimer.h"
 
 #define TP BIT3         //Transistor BC639: Programming
 #define TU BIT4         //Transistor BC337: Utility
-
 
 /* Main */
 int main(void) {
@@ -14,9 +14,6 @@ int main(void) {
     P2DIR = 0xFF; P2OUT = 0; P2REN = 0xFF;  // P2 Reset + Resistor Enable
     P3DIR = 0xFF; P3OUT = 0; P3REN = 0xFF;  // P3 Reset + Resistor Enable
 
-    P1SEL = BIT1 + BIT2;                    // P1.1 = RXD, P1.2=TXD
-    P1SEL2 = BIT1 + BIT2;                   // P1.1 = RXD, P1.2=TXD
-
     // Setup for Transistors
     P1DIR &= ~BIT5;                         // Input
     P1REN &= ~(BIT5 + BIT2);                // Without Resistor
@@ -27,14 +24,21 @@ int main(void) {
     P1REN |= TU;                            // Turn on Resistor
     P1OUT |= TU;                            // Turn on pin
 	
-    P3OUT = 0xA0;
+    // Serial configuration
+    //0b00000110
+    P1SEL = BIT1 + BIT2;                    // P1.1 = RXD, P1.2=TXD
+    P1SEL2 = BIT1 + BIT2;                   // P1.1 = RXD, P1.2=TXD
 
-    unsigned int i = 0;
+    setup_timer();                          // Setup the timer
+
+    // My code
+    unsigned char count = 0;
     while (1) {
-        for (i = 0; i < 65000; i++);
-        //P1OUT ^= BIT0;
-        P1OUT = 0x00;
+        if (timer >= 1000) {
+            timer = 0;
+            count++;
+        }
+        count = count >= 8? 0 : count;
+        P3OUT = count<<5;
     }
-
-	return 0;
 }
