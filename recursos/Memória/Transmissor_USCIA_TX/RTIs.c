@@ -6,8 +6,8 @@ extern volatile unsigned char* pc;
 extern unsigned char qtd; extern char* fila_msgs[]; //char* paux=  (char*)0xC44C;
 
 char* msg = "\r\nTESTE\r\n";//DEON //char SendId = 1;
-volatile unsigned char v1 = 'a',v2 = 'b',v3 = 'c', v4 = 'd';//teste de memoria com valores fixos, DEON
-volatile unsigned char* vetor_ptr[] = {&v1,&v2, &P3OUT, &P3IN}; //{&P1IN, &P2IN, &P3IN, &v4};
+volatile unsigned char v1 = 'A',v2 = 'B',v3 = 'C', v4 = 'D';//teste de memoria com valores fixos, DEON
+volatile unsigned char* vetor_ptr[] = {&v1,&v2, &v3, &v4}; //{&P1IN, &P2IN, &P3IN, &v4};
 
 char e = 0, cont = 0, cont2 = 0; static char i = 0; //variaveis do depurador
 #pragma vector=TIMER1_A1_VECTOR

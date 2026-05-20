@@ -7,14 +7,17 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace gerenciamento_memoria {
-    public enum TIME {
-        // IDLE Time to new message, with margin of error of 4
-        NEW_DATA = 14,
-        RAW_DATA = 6
+
+    public enum STATE {
+        IDLE = 0,
+        READING = 1,
+        STRING = 2
     }
 
-    public enum COM_MODE {
-        STRING, RAW_DATA
+    public static class Config {
+        public const long TIME_NEW_MSG = 190000;    // =~ 19ms, aprox. new data in ticks
+        public const long TIME_STR_INT = 110000;    // =~ 11ms, aprox. time of a str interrupt in ticks
+        public const long TIME_STR_READ = 2000;          // =~ 3ms, aprox. max time of continue as a string
     }
 
     public class Communication {

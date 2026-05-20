@@ -28,6 +28,7 @@ int main(void){
   P3DIR = 0xFF;                             // All P3.x outputs
   P3OUT = 0;                                // All P3.x reset
 
+
   P1REN = 0xFF; P2REN = 0xFF; P3REN = 0xFF;
   P3OUT |= BIT0;  P2OUT &= ~BIT0;
   //configuração dos pinos para chaveamento
@@ -54,6 +55,7 @@ int main(void){
 
   __bis_SR_register(/*LPM3_bits*/ + GIE);       // Enter LPM3 w/ int until Byte RXed
   char cont = 0;
+  P3OUT = 0xA0;
 
   while(1){
 	  P1OUT ^= BIT0;

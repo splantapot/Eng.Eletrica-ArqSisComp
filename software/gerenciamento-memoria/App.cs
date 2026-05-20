@@ -20,10 +20,12 @@ namespace gerenciamento_memoria {
         private string default_port = null;
 
         private readonly Stopwatch timer = new Stopwatch();
-        private COM_MODE com_mode = COM_MODE.STRING;
+        private STATE state = STATE.IDLE;
 
-        private readonly List<int> data_buffer = new List<int>();
-        private readonly List<int> data_list = new List<int>();
+        private int data_counter = 0;
+        private int[] data_list = new int[4];
+        private string data_str_buffer = "";
+        private char last_v = '\0';
 
         public App() {
             InitializeComponent();      // APP Init
@@ -56,69 +58,75 @@ namespace gerenciamento_memoria {
         // Handles the Port Sended Data
         public void ReadData(object sender, SerialDataReceivedEventArgs e) {
             SerialPort sp = (SerialPort)sender;
+            char v = (char)sp.ReadByte();
+            //long dt = timer.ElapsedTicks;
+            long dtms = timer.ElapsedMilliseconds;
+            Console.WriteLine(v + " |dtms: " + dtms);
+            //Console.WriteLine(dtms);
+            //last_v = v;
+            timer.Restart();
+        }
+
+        public void ReadData1905(object sender, SerialDataReceivedEventArgs e) {
+            SerialPort sp = (SerialPort)sender;
             while (sp.BytesToRead > 0) {
                 char v = (char) sp.ReadByte();
+                if (v == '\n') v = 'n';
+                if (v == '\r') v = 'r';
                 long dt = timer.ElapsedTicks;
+                bool buffer_ready = false;
+                bool write_raw = false;
                 Console.WriteLine("dt: " + dt + " | " + v);
                 timer.Restart();
-            }
+                return;
 
-            /*while (sp.BytesToRead > 0) {
-                int data = sp.ReadByte();
-                long dt = timer.ElapsedMilliseconds; //dt: time variation
-            
-                // Check if upcoming data is a new "data start".
-                if (dt >= (long) TIME.NEW_DATA) {
-                    // It's a "data start"
-                    RenderData(com_mode);
-                    data_buffer.Clear();
-                    com_mode = COM_MODE.STRING;
-                    timer.Restart();
-                } else if (dt >= (long) TIME.RAW_DATA) {
-                    // It's a list of raw data
-                    com_mode = COM_MODE.RAW_DATA;
+                if (dt >= Config.TIME_NEW_MSG) {
+                    // New data coming
+                    state = STATE.READING;
+                    data_counter = 0;
                 }
-                //Console.WriteLine(data + " | " + dt);
-                data_buffer.Add(data);
-                timer.Restart();
-            }*/
-        }
 
-        private void RenderData(COM_MODE mode) {
-            switch (mode) {
-                case COM_MODE.STRING:
-                    Console.WriteLine("Str: " + string.Join(",", data_buffer));
-                    break;
-                case COM_MODE.RAW_DATA:
-                    Console.WriteLine("Raw: " + string.Join(",", data_buffer));
-                    break;
-            }
-        }
-
-        // Main pool data
-        private void ReadData2(int value) {
-            /*
-            // Cancel if value is empty or the window hasn't started.
-            if (this.IsDisposed || !this.IsHandleCreated) return;
-            // Read the data in UI Thread
-            this.BeginInvoke(new Action(() => {
-                try {
-                    if (value.Contains("\n")) {
-                        textboxMsg.AppendText(value);
-                    } else {
-                        char v = value[0];
-                        if (!data_list.Contains(v)) {
-                            Console.WriteLine("Received: " + v);
-                            data_list.Add(v);
-                        } else {
-                            Console.WriteLine(v);
-                        }
+                if (dt < Config.TIME_STR_READ) {
+                    // If a data came so much fast...
+                    if (state == STATE.READING) {
+                        //... and if it's reading
+                        state = STATE.STRING;
                     }
-                } catch (Exception ex) {
-                    Console.WriteLine("Error in ReadData: " + ex.Message);
+                    if (state == STATE.STRING) {
+                        data_str_buffer += v;
+                    }
+                } else {
+                    if (state == STATE.STRING) {
+                        state = STATE.READING;
+                        buffer_ready = true;
+                    }
                 }
-            }));
-            */
+
+                if (state == STATE.READING) {
+                    data_list[data_counter] = v;
+                    data_counter++;
+                    if (data_counter >= 4) {
+                        data_counter = 0;
+                        write_raw = true;
+                    }
+                }
+
+                RenderData(write_raw);
+
+                if (buffer_ready) {
+                    //PrintBufferInApp();
+                    Console.WriteLine(data_str_buffer);
+                    data_str_buffer = "";
+                }
+
+                timer.Restart();
+            }
+        }
+
+        private void RenderData(bool raw_ready) {
+            if (raw_ready) {
+                Console.WriteLine("{ " + string.Join(",", data_list) + " }");
+            }
         }
 
         // Send Data to Device
@@ -127,7 +135,22 @@ namespace gerenciamento_memoria {
             textboxCMD.Clear();
             if (!string.IsNullOrEmpty(value)) com.Write(value);
         }
-         
+
+        /* ====================================  */
+        /* Print Functions                        */
+        /* ====================================  */
+
+        private void PrintBufferInApp() {
+            if (this.InvokeRequired) {
+                this.Invoke(new Action(() => { PrintBufferInApp(); }));
+                return;
+            }
+
+            Console.WriteLine(data_str_buffer);
+            textboxMsg.AppendText(data_str_buffer);
+            data_str_buffer = "";
+        }
+
         private void cmdBox_KeyDown(object sender, KeyEventArgs e) {
             if (e.KeyCode == Keys.Enter) {
                 SendData(sender, e);

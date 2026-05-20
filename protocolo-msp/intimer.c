@@ -26,4 +26,11 @@ void reset_timer(void) {
 __interrupt void TIMER_A_ISR(void){
     TACTL &= ~TAIFG;
     timer++;
+    /*
+    switch (TA1IV) {
+        case TA1IV_TAIFG:
+            timer++;
+            break;
+    }
+    */
 }
