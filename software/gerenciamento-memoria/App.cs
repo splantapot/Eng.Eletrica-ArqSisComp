@@ -249,11 +249,18 @@ namespace gerenciamento_memoria {
         private void dataGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
             int row = e.RowIndex;
             if (row < 0) return;
-            string value = datagrid.Rows[row].Cells[0].Value?.ToString();
-            // Accepts the hex notation
-            if (value.Contains("x")) value = value.Split('x')[1];
+            // Handles "text null" error.
+            string text;
             try {
-                if (int.TryParse(value, out int address)) {
+                text = datagrid.Rows[row].Cells[0].Value.ToString();
+            } catch {
+                text = "";
+            }
+
+            // Accepts the hex notation
+            if (text.Contains("x")) text = text.Split('x')[1];
+            try {
+                if (int.TryParse(text, out int address)) {
                     datagrid.Rows[row].Cells[1].Value = data_list[address].ToString("X"); // Hex
                     datagrid.Rows[row].Cells[2].Value = data_list[address];              // Decimal
                 }
