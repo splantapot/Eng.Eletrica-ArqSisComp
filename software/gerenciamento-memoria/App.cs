@@ -7,30 +7,28 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.IO.Ports;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace gerenciamento_memoria {
     public partial class App : Form {
-        // Object that handles a communication
-        public Communication com;
+        
+        public Communication com;               // Object that handles a communication
+        private string selected_port = null;    // Default port, data_list and 
 
-        // Default port, data_list and 
-        private string selected_port = null;
-
-        private readonly Stopwatch timer = new Stopwatch();
-        private STATE state = STATE.IDLE;
-
-        private int data_counter = 0;
-        private int[] data_list = new int[4];
-        private string data_str_buffer = "";
-        private char last_v = '\0';
+        private string str_buffer = "";
+        private string str_ready = "";
+        private int raw_counter = 0;
+        private int[] raw_buffer = new int[3];
+        private int[] raw_ready = new int[3];
+        private STATE read_state = STATE.DONE;
 
         public App() {
             InitializeComponent();      // APP Init
             com = new Communication();  // Instance Communication onj
-            timer.Start();              // Prepares Timer
             RenderPortBox();            // Init setting
             DoConnection();
         }
@@ -46,7 +44,7 @@ namespace gerenciamento_memoria {
 
             if (com.Open(selected_port)) {
                 Console.WriteLine($"Porta [{selected_port}] aberta.");
-                // Prevents error on setting callback
+                // Prevents error on setting callback to break and read
                 com.RmvReadCallback(ReadData);
                 com.SetReadCallback(ReadData);
             } else {
@@ -79,128 +77,101 @@ namespace gerenciamento_memoria {
         /* Data Functions                        */
         /* ====================================  */
 
-        // --- Variáveis de Inicialização (Devem ser declaradas no escopo da classe) ---
-        private long dtp = 200000; // Tempo anterior simulado (ex: 20ms em ticks)
-        private long tant = 0;     // Tempo anterior
-        private byte c = 0;
-        private int s = 0;
-        private int i = 0;
-        private int j = 0;
-        private string s_str = ""; // 'string s;' do quadro
-        private char[] str = new char[256]; // Buffer para a string
-        private byte[] RAWs = new byte[256]; // Buffer para os dados brutos
-
-        // Substituindo o '#define e dt < 10000' por uma propriedade ou lógica direta.
-        // Nota: 1 ms equivale a 10.000 ticks no Stopwatch do C#.
-        private bool IsByteReceivedOnTime(long dt) => dt < 10000;
-
         // Handles the Port Sended Data
         public void ReadData(object sender, SerialDataReceivedEventArgs e) {
             SerialPort sp = (SerialPort)sender;
             while (sp.BytesToRead > 0) {
-                c = (byte)sp.ReadByte();
+                int v = (int)sp.ReadByte();
+                //Console.WriteLine(v);
 
-                long t = timer.ElapsedTicks;
-                long dt = t - tant;
-                tant = t; // tant = t;
-                bool condition_e = IsByteReceivedOnTime(dt);
-
-                if (condition_e) {
-                    s = 1;
-                    if (i < str.Length) str[i++] = (char)c;
-                } else {
-                    if (s == 1) {
-                        if (i < str.Length) str[i++] = (char)c;
-                        if (i < str.Length) str[i] = '\0';
-                        Console.WriteLine($"String: {new string(str, 0, i - 1)}");
-                        RenderData(new string(str, 0, i - 1));
-                        i = 0;
-                        s = 0;
-                    }
+                // Break detection
+                if (v == 0) {
+                    read_state = STATE.WAITING;
+                    continue;
                 }
 
-                if (dtp > 110000 && dtp < 210000) {
-                    j = 0;
-                    if (j < RAWs.Length) RAWs[j++] = c; // Início dos RAWs
-                } else if (dtp > 100000 && dtp < 110000) {
-                    if (j < RAWs.Length) RAWs[j++] = c; // Não é o início, dado após o início
-                    //Console.WriteLine($"Raw: {string.Join(",", RAWs)}");
+                switch (read_state) {
+                    case STATE.WAITING:
+                        // If state bit == 1, read_state is STRING
+                        // If state bit == 3, read_state is RAW
+                        read_state = (STATE) v;
+                        RenderBuffer();
+                        raw_counter = 0;
+                        break;
+
+                    case STATE.STRING:
+                        str_buffer += (char) v;
+                        break;
+
+                    case STATE.RAW:
+                        raw_buffer[raw_counter] = v;
+                        raw_counter++;
+                        break;
                 }
-
-                // Atualiza o dtp com o dt atual para a próxima iteração
-                dtp = dt;
-            }
-            //SerialPort sp = (SerialPort)sender;
-            //char v = (char)sp.ReadByte();
-            ////long dt = timer.ElapsedTicks;
-            //long dtms = timer.ElapsedMilliseconds;
-            //Console.WriteLine(v + " |dtms: " + dtms);
-            //timer.Restart();
-        }
-
-        public void ReadData1905(object sender, SerialDataReceivedEventArgs e) {
-            SerialPort sp = (SerialPort)sender;
-            while (sp.BytesToRead > 0) {
-                char v = (char) sp.ReadByte();
-                if (v == '\n') v = 'n';
-                if (v == '\r') v = 'r';
-                long dt = timer.ElapsedTicks;
-                bool buffer_ready = false;
-                bool write_raw = false;
-                /*Console.WriteLine("dt: " + dt + " | " + v);
-                timer.Restart();
-                return;*/
-
-                if (dt >= Config.TIME_NEW_MSG) {
-                    // New data coming
-                    state = STATE.READING;
-                    data_counter = 0;
-                }
-
-                if (dt < Config.TIME_STR_READ) {
-                    // If a data came so much fast...
-                    if (state == STATE.READING) {
-                        //... and if it's reading
-                        state = STATE.STRING;
-                    }
-                    if (state == STATE.STRING) {
-                        data_str_buffer += v;
-                    }
-                } else {
-                    if (state == STATE.STRING) {
-                        state = STATE.READING;
-                        buffer_ready = true;
-                    }
-                }
-
-                if (state == STATE.READING) {
-                    data_list[data_counter] = v;
-                    data_counter++;
-                    if (data_counter >= 4) {
-                        data_counter = 0;
-                        write_raw = true;
-                    }
-                }
-
-                //RenderData(write_raw);
-
-                if (buffer_ready) {
-                    //PrintBufferInApp();
-                    Console.WriteLine(data_str_buffer);
-                    data_str_buffer = "";
-                }
-
-                timer.Restart();
             }
         }
+        private void RenderBuffer() {
+            if (!string.IsNullOrEmpty(str_buffer)) {
+                str_ready = str_buffer;
+                str_buffer = "";
+                RenderString();
+                // Console.WriteLine($"STR: {str_ready}");
+            }
 
-        private void RenderData(string raw_ready) {
+            for (int i = 0; i < raw_buffer.Length; i++) {
+                raw_ready[i] = raw_buffer[i];
+            }
+            RenderTable();
+            //Console.WriteLine($"BFF: {raw_buffer[0]}");
+            //Console.WriteLine($"RAW: {raw_ready.Count}");
+            //if (raw_buffer.Length > 0) {
+            //    raw_ready = raw_buffer;
+            //    raw_buffer.Clear();
+            //}
+        }
+
+        private void RenderString() {
             if (this.InvokeRequired) {
-                this.Invoke(new Action(() => { RenderData(raw_ready); }));
+                this.Invoke(new Action(() => { RenderString(); }));
+                return;
+            }
+            textboxMsg.AppendText(str_ready);
+        }
+
+        private void RenderTable() {
+            if (this.InvokeRequired) {
+                this.Invoke(new Action(() => { RenderTable(); }));
                 return;
             }
 
-            textboxMsg.AppendText(raw_ready);
+            for (int row = 0; row < datagrid.Rows.Count; row++) {
+                // Handles "text null" error.
+                string text;
+                try {
+                    // Address column
+                    text = datagrid.Rows[row].Cells[0].Value.ToString();
+                } catch {
+                    text = "";
+                }
+
+                if (text.Contains("x")) text = text.Split('x')[1];
+
+                // Accepts the hex notation
+                try {
+                    if (int.TryParse(text, out int address)) {
+                        Console.WriteLine($"row: {row} || add: {address} || {string.Join(",", raw_ready)}");
+
+                        datagrid.Rows[row].Cells[2].Value = raw_ready[address].ToString("X");
+                        datagrid.Rows[row].Cells[1].Value = raw_ready[address];
+                        
+                        //datagrid.Rows[row].Cells[1].Value = raw_ready[address].ToString("X");   // Hex Read column
+                        //datagrid.Rows[row].Cells[2].Value = raw_ready[address];                 // Decimal Read column
+                    }
+                } catch {
+                    // Address NaN
+                    continue;
+                }
+            }
         }
 
         // Send Data to Device
@@ -220,9 +191,9 @@ namespace gerenciamento_memoria {
                 return;
             }
 
-            Console.WriteLine(data_str_buffer);
-            textboxMsg.AppendText(data_str_buffer);
-            data_str_buffer = "";
+            //Console.WriteLine(data_str_buffer);
+            //textboxMsg.AppendText(data_str_buffer);
+            //data_str_buffer = "";
         }
 
         private void cmdBox_KeyDown(object sender, KeyEventArgs e) {
@@ -251,26 +222,27 @@ namespace gerenciamento_memoria {
 
         // When the user finish edit a cell
         private void dataGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
-            int row = e.RowIndex;
-            if (row < 0) return;
-            // Handles "text null" error.
-            string text;
-            try {
-                text = datagrid.Rows[row].Cells[0].Value.ToString();
-            } catch {
-                text = "";
-            }
+            RenderTable();
+            //int row = e.RowIndex;
+            //if (row < 0) return;
+            //// Handles "text null" error.
+            //string text;
+            //try {
+            //    text = datagrid.Rows[row].Cells[0].Value.ToString();
+            //} catch {
+            //    text = "";
+            //}
 
-            // Accepts the hex notation
-            if (text.Contains("x")) text = text.Split('x')[1];
-            try {
-                if (int.TryParse(text, out int address)) {
-                    datagrid.Rows[row].Cells[1].Value = data_list[address].ToString("X"); // Hex
-                    datagrid.Rows[row].Cells[2].Value = data_list[address];              // Decimal
-                }
-            } catch {
-                return; // Couldn't read
-            }
+            //// Accepts the hex notation
+            //if (text.Contains("x")) text = text.Split('x')[1];
+            //try {
+            //    if (int.TryParse(text, out int address)) {
+            //        datagrid.Rows[row].Cells[1].Value = raw_ready[address].ToString("X");   // Hex
+            //        datagrid.Rows[row].Cells[2].Value = raw_ready[address];                 // Decimal
+            //    }
+            //} catch {
+            //    return; // Couldn't read
+            //}
         }
 
         /* ====================================  */

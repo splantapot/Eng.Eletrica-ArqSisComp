@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 namespace gerenciamento_memoria {
 
     public enum STATE {
-        IDLE = 0,
-        READING = 1,
-        STRING = 2
+        DONE = 0,
+        STRING = 1,
+        RAW = 3,
+        WAITING = 4
     }
 
     public static class Config {
