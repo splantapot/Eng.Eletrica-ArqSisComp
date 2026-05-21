@@ -17,7 +17,7 @@ namespace gerenciamento_memoria {
         public Communication com;
 
         // Default port, data_list and 
-        private string default_port = null;
+        private string selected_port = null;
 
         private readonly Stopwatch timer = new Stopwatch();
         private STATE state = STATE.IDLE;
@@ -31,40 +31,110 @@ namespace gerenciamento_memoria {
             InitializeComponent();      // APP Init
             com = new Communication();  // Instance Communication onj
             timer.Start();              // Prepares Timer
-            RenderPortBox(true);        // Init setting
-            TryDefaultInit();
+            RenderPortBox();            // Init setting
+            DoConnection();
         }
 
         /* ====================================  */
-        /* Tries a default connection            */
+        /* Connection Functions                  */
         /* ====================================  */
-        private void TryDefaultInit() {
-            if (!com.isConnected) {
-                Console.WriteLine(default_port);
-                if (com.Open(default_port)) {
-                    Console.WriteLine("Porta aberta: " + default_port);
-                    com.SetReadCallback(ReadData);
+        private void DoConnection(string port = "") {
+            if (!string.IsNullOrEmpty(port)) {
+                Console.WriteLine("here");
+                selected_port = port;
+            }
+
+            if (com.Open(selected_port)) {
+                Console.WriteLine($"Porta [{selected_port}] aberta.");
+                // Prevents error on setting callback
+                com.RmvReadCallback(ReadData);
+                com.SetReadCallback(ReadData);
+            } else {
+                Console.WriteLine($"Porta [{selected_port}] não aberta (falha).");
+                MessageBox.Show("Não foi possível encontrar a porta.");
+            }
+        }
+
+        private void DoDesconnection() {
+            if (com.IsConnected()) {
+                if (com.Close(selected_port)) {
+                    Console.WriteLine($"Porta [{selected_port}] encerrada.");
+                    selected_port = null;
                 } else {
-                    Console.WriteLine("Porta não aberta.");
-                    MessageBox.Show("Não foi possível encontrar uma porta para inicialização padrão.");
+                    Console.WriteLine($"Porta [{selected_port}] não encerrada (falha).");
                 }
             }
+        }
+
+        private void btnConnected_Click(object sender, EventArgs e) {
+            string PORT = comboxPorts.SelectedItem.ToString();
+            DoConnection(PORT);
+        }
+
+        private void btnDesconnect_Click(object sender, EventArgs e) {
+            DoDesconnection();
         }
 
         /* ====================================  */
         /* Data Functions                        */
         /* ====================================  */
 
+        // --- Variáveis de Inicialização (Devem ser declaradas no escopo da classe) ---
+        private long dtp = 200000; // Tempo anterior simulado (ex: 20ms em ticks)
+        private long tant = 0;     // Tempo anterior
+        private byte c = 0;
+        private int s = 0;
+        private int i = 0;
+        private int j = 0;
+        private string s_str = ""; // 'string s;' do quadro
+        private char[] str = new char[256]; // Buffer para a string
+        private byte[] RAWs = new byte[256]; // Buffer para os dados brutos
+
+        // Substituindo o '#define e dt < 10000' por uma propriedade ou lógica direta.
+        // Nota: 1 ms equivale a 10.000 ticks no Stopwatch do C#.
+        private bool IsByteReceivedOnTime(long dt) => dt < 10000;
+
         // Handles the Port Sended Data
         public void ReadData(object sender, SerialDataReceivedEventArgs e) {
             SerialPort sp = (SerialPort)sender;
-            char v = (char)sp.ReadByte();
-            //long dt = timer.ElapsedTicks;
-            long dtms = timer.ElapsedMilliseconds;
-            Console.WriteLine(v + " |dtms: " + dtms);
-            //Console.WriteLine(dtms);
-            //last_v = v;
-            timer.Restart();
+            while (sp.BytesToRead > 0) {
+                c = (byte)sp.ReadByte();
+
+                long t = timer.ElapsedTicks;
+                long dt = t - tant;
+                tant = t; // tant = t;
+                bool condition_e = IsByteReceivedOnTime(dt);
+
+                if (condition_e) {
+                    s = 1;
+                    if (i < str.Length) str[i++] = (char)c;
+                } else {
+                    if (s == 1) {
+                        if (i < str.Length) str[i++] = (char)c;
+                        if (i < str.Length) str[i] = '\0';
+                        Console.WriteLine($"String: {new string(str, 0, i - 1)}");
+                        i = 0;
+                        s = 0;
+                    }
+                }
+
+                if (dtp > 110000 && dtp < 210000) {
+                    j = 0;
+                    if (j < RAWs.Length) RAWs[j++] = c; // Início dos RAWs
+                } else if (dtp > 100000 && dtp < 110000) {
+                    if (j < RAWs.Length) RAWs[j++] = c; // Não é o início, dado após o início
+                    //Console.WriteLine($"Raw: {string.Join(",", RAWs)}");
+                }
+
+                // Atualiza o dtp com o dt atual para a próxima iteração
+                dtp = dt;
+            }
+            //SerialPort sp = (SerialPort)sender;
+            //char v = (char)sp.ReadByte();
+            ////long dt = timer.ElapsedTicks;
+            //long dtms = timer.ElapsedMilliseconds;
+            //Console.WriteLine(v + " |dtms: " + dtms);
+            //timer.Restart();
         }
 
         public void ReadData1905(object sender, SerialDataReceivedEventArgs e) {
@@ -76,9 +146,9 @@ namespace gerenciamento_memoria {
                 long dt = timer.ElapsedTicks;
                 bool buffer_ready = false;
                 bool write_raw = false;
-                Console.WriteLine("dt: " + dt + " | " + v);
+                /*Console.WriteLine("dt: " + dt + " | " + v);
                 timer.Restart();
-                return;
+                return;*/
 
                 if (dt >= Config.TIME_NEW_MSG) {
                     // New data coming
@@ -158,15 +228,6 @@ namespace gerenciamento_memoria {
             }
         }
 
-        // Update the PortBox every time that a device is detected.
-        //protected override void WndProc(ref Message m) {
-        //    base.WndProc(ref m);
-        //    // Connected an USB
-        //    if (m.Msg == 0x0219) {
-        //        RenderPortBox();
-        //    }
-        //}
-
         public void addRowBtn_Click(object sender, EventArgs e) {
             datagrid.Rows.Add("x", "-", "-");
         }
@@ -205,26 +266,40 @@ namespace gerenciamento_memoria {
         /* Render the PortCombobox               */
         /* ====================================  */
         private void RenderPortBox(bool isInit = false) {
+            if (this.InvokeRequired) {
+                this.Invoke(new Action(() => RenderPortBox()));
+            }
+
             string[] ports = com.GetPortList();
 
-            void RenderFunc() {
-                foreach (string port in ports) {
-                    if (!comboxPorts.Items.Contains(port)) comboxPorts.Items.Add(port);
-                }
+            comboxPorts.Items.Clear();
 
-                // If found only one port, select it.
-                if (default_port == null && ports.Length == 1) {
-                    comboxPorts.SelectedIndex = 0;
-                    default_port = comboxPorts.SelectedItem as string;
-                }
+            foreach (string port in ports) {
+                if (!comboxPorts.Items.Contains(port)) comboxPorts.Items.Add(port);
             }
 
-            // Only can use Invoke after Form creation
-            if (!isInit) {
-                this.BeginInvoke(new Action(() => RenderFunc()));
-            } else {
-                RenderFunc();
+            // If found only one port, select it.
+            if (selected_port == null && ports.Length == 1) {
+                comboxPorts.SelectedIndex = 0;
+                selected_port = comboxPorts.SelectedItem as string;
+            } else if (!com.IsConnected()) {
+                comboxPorts.Text = "";
+                comboxPorts.SelectedIndex = -1;
+                selected_port = null;
             }
+        }
+
+        // Update the PortBox every time that a device is detected.
+        protected override void WndProc(ref Message m) {
+            base.WndProc(ref m);
+            // Connected an USB
+            if (m.Msg == 0x0219) {
+                RenderPortBox();
+            }
+        }
+
+        private void comboxPorts_SelectedIndexChanged(object sender, EventArgs e) {
+            DoDesconnection();
         }
     }
 }

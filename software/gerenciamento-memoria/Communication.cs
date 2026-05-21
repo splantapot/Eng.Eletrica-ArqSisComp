@@ -32,8 +32,6 @@ namespace gerenciamento_memoria {
 
         static SerialPort _serialPort;
 
-        public bool isConnected = false;
-
         public Communication() {
             // Create a new SerialPort object with default settings.
             _serialPort = new SerialPort();
@@ -80,7 +78,7 @@ namespace gerenciamento_memoria {
         /* ====================================  */
         /* Get status from COMx Port             */
         /* ====================================  */
-        public bool IsConnectet() {
+        public bool IsConnected() {
             return _serialPort.IsOpen;
         }
 

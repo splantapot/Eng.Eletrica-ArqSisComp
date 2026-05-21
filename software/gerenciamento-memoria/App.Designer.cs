@@ -34,6 +34,7 @@
             this.colWriteDec = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.labelRead = new System.Windows.Forms.Label();
             this.panelButtons = new System.Windows.Forms.Panel();
+            this.btnConnected = new System.Windows.Forms.Button();
             this.comboxPorts = new System.Windows.Forms.ComboBox();
             this.btnRmvRow = new System.Windows.Forms.Button();
             this.panelMsg = new System.Windows.Forms.Panel();
@@ -52,7 +53,7 @@
             this.btnSendCmd = new System.Windows.Forms.Button();
             this.textboxCMD = new System.Windows.Forms.TextBox();
             this.labelCMD = new System.Windows.Forms.Label();
-            this.btnConnected = new System.Windows.Forms.Button();
+            this.btnDesconnect = new System.Windows.Forms.Button();
             this.panelDatagrid.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.datagrid)).BeginInit();
             this.panelButtons.SuspendLayout();
@@ -163,6 +164,7 @@
             // 
             // panelButtons
             // 
+            this.panelButtons.Controls.Add(this.btnDesconnect);
             this.panelButtons.Controls.Add(this.btnConnected);
             this.panelButtons.Controls.Add(this.comboxPorts);
             this.panelButtons.Controls.Add(this.btnAddRow);
@@ -173,6 +175,16 @@
             this.panelButtons.Size = new System.Drawing.Size(684, 46);
             this.panelButtons.TabIndex = 8;
             // 
+            // btnConnected
+            // 
+            this.btnConnected.Location = new System.Drawing.Point(415, 6);
+            this.btnConnected.Name = "btnConnected";
+            this.btnConnected.Size = new System.Drawing.Size(80, 34);
+            this.btnConnected.TabIndex = 6;
+            this.btnConnected.Text = "Conectar";
+            this.btnConnected.UseVisualStyleBackColor = true;
+            this.btnConnected.Click += new System.EventHandler(this.btnConnected_Click);
+            // 
             // comboxPorts
             // 
             this.comboxPorts.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -181,6 +193,7 @@
             this.comboxPorts.Name = "comboxPorts";
             this.comboxPorts.Size = new System.Drawing.Size(121, 23);
             this.comboxPorts.TabIndex = 5;
+            this.comboxPorts.SelectedIndexChanged += new System.EventHandler(this.comboxPorts_SelectedIndexChanged);
             // 
             // btnRmvRow
             // 
@@ -271,7 +284,7 @@
             this.textboxCMDReg.Name = "textboxCMDReg";
             this.textboxCMDReg.ReadOnly = true;
             this.textboxCMDReg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textboxCMDReg.Size = new System.Drawing.Size(317, 54);
+            this.textboxCMDReg.Size = new System.Drawing.Size(305, 54);
             this.textboxCMDReg.TabIndex = 1;
             // 
             // labelCMDReg
@@ -287,7 +300,7 @@
             // btnBITSET
             // 
             this.btnBITSET.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBITSET.Location = new System.Drawing.Point(261, 82);
+            this.btnBITSET.Location = new System.Drawing.Point(249, 82);
             this.btnBITSET.Name = "btnBITSET";
             this.btnBITSET.Size = new System.Drawing.Size(67, 52);
             this.btnBITSET.TabIndex = 12;
@@ -297,7 +310,7 @@
             // btnBITCLR
             // 
             this.btnBITCLR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBITCLR.Location = new System.Drawing.Point(188, 82);
+            this.btnBITCLR.Location = new System.Drawing.Point(176, 82);
             this.btnBITCLR.Name = "btnBITCLR";
             this.btnBITCLR.Size = new System.Drawing.Size(67, 52);
             this.btnBITCLR.TabIndex = 11;
@@ -311,7 +324,7 @@
             this.textboxCMDBit.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textboxCMDBit.Location = new System.Drawing.Point(47, 111);
             this.textboxCMDBit.Name = "textboxCMDBit";
-            this.textboxCMDBit.Size = new System.Drawing.Size(135, 23);
+            this.textboxCMDBit.Size = new System.Drawing.Size(123, 23);
             this.textboxCMDBit.TabIndex = 10;
             // 
             // labelSetBit
@@ -341,7 +354,7 @@
             this.textboxCMDAddress.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textboxCMDAddress.Location = new System.Drawing.Point(47, 82);
             this.textboxCMDAddress.Name = "textboxCMDAddress";
-            this.textboxCMDAddress.Size = new System.Drawing.Size(135, 23);
+            this.textboxCMDAddress.Size = new System.Drawing.Size(123, 23);
             this.textboxCMDAddress.TabIndex = 7;
             // 
             // labelSpCMD
@@ -357,7 +370,7 @@
             // btnSendCmd
             // 
             this.btnSendCmd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSendCmd.Location = new System.Drawing.Point(261, 25);
+            this.btnSendCmd.Location = new System.Drawing.Point(249, 25);
             this.btnSendCmd.Name = "btnSendCmd";
             this.btnSendCmd.Size = new System.Drawing.Size(67, 23);
             this.btnSendCmd.TabIndex = 5;
@@ -372,7 +385,7 @@
             this.textboxCMD.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textboxCMD.Location = new System.Drawing.Point(11, 25);
             this.textboxCMD.Name = "textboxCMD";
-            this.textboxCMD.Size = new System.Drawing.Size(244, 23);
+            this.textboxCMD.Size = new System.Drawing.Size(232, 23);
             this.textboxCMD.TabIndex = 1;
             this.textboxCMD.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmdBox_KeyDown);
             // 
@@ -386,14 +399,15 @@
             this.labelCMD.TabIndex = 0;
             this.labelCMD.Text = "Comandos";
             // 
-            // btnConnected
+            // btnDesconnect
             // 
-            this.btnConnected.Location = new System.Drawing.Point(412, 6);
-            this.btnConnected.Name = "btnConnected";
-            this.btnConnected.Size = new System.Drawing.Size(97, 34);
-            this.btnConnected.TabIndex = 6;
-            this.btnConnected.Text = "Conectar";
-            this.btnConnected.UseVisualStyleBackColor = true;
+            this.btnDesconnect.Location = new System.Drawing.Point(501, 6);
+            this.btnDesconnect.Name = "btnDesconnect";
+            this.btnDesconnect.Size = new System.Drawing.Size(80, 34);
+            this.btnDesconnect.TabIndex = 7;
+            this.btnDesconnect.Text = "Desconectar";
+            this.btnDesconnect.UseVisualStyleBackColor = true;
+            this.btnDesconnect.Click += new System.EventHandler(this.btnDesconnect_Click);
             // 
             // App
             // 
@@ -452,6 +466,7 @@
         private System.Windows.Forms.TextBox textboxCMDBit;
         private System.Windows.Forms.Label labelSetBit;
         private System.Windows.Forms.Button btnConnected;
+        private System.Windows.Forms.Button btnDesconnect;
     }
 }
 

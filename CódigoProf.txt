@@ -1,0 +1,57 @@
+        // --- Variáveis de Inicialização (Devem ser declaradas no escopo da classe) ---
+        private long dtp = 200000; // Tempo anterior simulado (ex: 20ms em ticks)
+        private long tant = 0;     // Tempo anterior
+        private byte c = 0;
+        private int s = 0;
+        private int i = 0;
+        private int j = 0;
+        private string s_str = ""; // 'string s;' do quadro
+        private char[] str = new char[256]; // Buffer para a string
+        private byte[] RAWs = new byte[256]; // Buffer para os dados brutos
+
+        // Substituindo o '#define e dt < 10000' por uma propriedade ou lógica direta.
+        // Nota: 1 ms equivale a 10.000 ticks no Stopwatch do C#.
+        private bool IsByteReceivedOnTime(long dt) => dt < 10000;
+
+        // Handles the Port Sended Data
+        public void ReadData(object sender, SerialDataReceivedEventArgs e) {
+            SerialPort sp = (SerialPort)sender;
+            while (sp.BytesToRead > 0) {
+                c = (byte)sp.ReadByte();
+
+                long t = timer.ElapsedTicks;
+                long dt = t - tant;
+                tant = t; // tant = t;
+                bool condition_e = IsByteReceivedOnTime(dt);
+
+                if (condition_e) {
+                    s = 1;
+                    if (i < str.Length) str[i++] = (char)c;
+                } else {
+                    if (s == 1) {
+                        if (i < str.Length) str[i++] = (char)c;
+                        if (i < str.Length) str[i] = '\0';
+                        Console.WriteLine($"String: {new string(str, 0, i - 1)}");
+                        i = 0;
+                        s = 0;
+                    }
+                }
+
+                if (dtp > 110000 && dtp < 210000) {
+                    j = 0;
+                    if (j < RAWs.Length) RAWs[j++] = c; // Início dos RAWs
+                } else if (dtp > 1 && dtp < 11) {
+                    if (j < RAWs.Length) RAWs[j++] = c; // Não é o início, dado após o início
+                    Console.WriteLine($"Rar: {string.Join(",", RAWs)}");
+                }
+
+                // Atualiza o dtp com o dt atual para a próxima iteração
+                dtp = dt;
+            }
+            //SerialPort sp = (SerialPort)sender;
+            //char v = (char)sp.ReadByte();
+            ////long dt = timer.ElapsedTicks;
+            //long dtms = timer.ElapsedMilliseconds;
+            //Console.WriteLine(v + " |dtms: " + dtms);
+            //timer.Restart();
+        }
