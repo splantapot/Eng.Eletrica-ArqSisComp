@@ -113,6 +113,7 @@ namespace gerenciamento_memoria {
                         if (i < str.Length) str[i++] = (char)c;
                         if (i < str.Length) str[i] = '\0';
                         Console.WriteLine($"String: {new string(str, 0, i - 1)}");
+                        RenderData(new string(str, 0, i - 1));
                         i = 0;
                         s = 0;
                     }
@@ -181,7 +182,7 @@ namespace gerenciamento_memoria {
                     }
                 }
 
-                RenderData(write_raw);
+                //RenderData(write_raw);
 
                 if (buffer_ready) {
                     //PrintBufferInApp();
@@ -193,10 +194,13 @@ namespace gerenciamento_memoria {
             }
         }
 
-        private void RenderData(bool raw_ready) {
-            if (raw_ready) {
-                Console.WriteLine("{ " + string.Join(",", data_list) + " }");
+        private void RenderData(string raw_ready) {
+            if (this.InvokeRequired) {
+                this.Invoke(new Action(() => { RenderData(raw_ready); }));
+                return;
             }
+
+            textboxMsg.AppendText(raw_ready);
         }
 
         // Send Data to Device
