@@ -9,6 +9,7 @@
 
 volatile unsigned char indice, valor, break_condicao;
 extern volatile unsigned char* vetor_ptr[];//vetor de endereços na memória
+volatile unsigned char comando = 0;
 
 unsigned char escreve_endereco(unsigned char dado) {
 	static unsigned char estado = 0;//estado inicializado com zero
@@ -17,27 +18,44 @@ unsigned char escreve_endereco(unsigned char dado) {
 		return 1;
 	}
 
+	// break 251 2 0
+
 	switch (estado) {//indice, valor, id
 	//case 0: // Espera o byte de sincronismo (0x00)
 	//	break;
-	case 1: // Recebe byte do indice do vetor
-		indice = dado; // break 2  0 251
+
+	case 1: // Recebe byte de comando
 		estado = 2;
+		comando = dado;
+		/*
+        switch(dado){//tipo de comando de escrita
+            case 251:
+                *(vetor_ptr[indice]) = valor;//escreve efetivamente na memória
+                estado = 0;
+                return 3;
+                break;
+            //case 252:
+        }*/
 		break;
+
 	case 2:
-		valor = dado;
 		estado = 3;
+	    indice = dado;
 		break;
+		// valor = dado;
+
 	case 3:     // Recebe valor de 8 bits a ser escrito na memória
-		switch(dado){//tipo de comando de escrita
-		case 251:
-			*(vetor_ptr[indice]) = valor;//escreve efetivamente na memória
-			estado = 0;
-			return 3;
-			break;
-		//case 252:
+	    estado = 0;
+	    valor = dado;
+		switch(comando){//tipo de comando de escrita
+		    case 251:
+                *(vetor_ptr[indice]) = valor;//escreve efetivamente na memória
+                break;
+            //case 252:
 		}
+        return 3;
 		break;
+
 	default:
 		estado = 0;
 		break;

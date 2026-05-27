@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -131,8 +132,18 @@ namespace gerenciamento_memoria {
         /* ====================================  */
         /* Writes to COMx Port                   */
         /* ====================================  */
-        public void Write(string data) {
-            _serialPort.WriteLine(data);
+        public void WriteRaw(byte data) {
+            _serialPort.Write(new[] { data }, 0, 1);
+        }
+
+        public void WriteChar(string str) {
+            _serialPort.Write(str);
+        }
+
+        public void WriteBreak() {
+            _serialPort.BreakState = true;
+            System.Threading.Thread.Sleep(1);
+            _serialPort.BreakState = false;
         }
     }
 }

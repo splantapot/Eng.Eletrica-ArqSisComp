@@ -6,12 +6,13 @@ extern volatile unsigned char* pc;
 extern unsigned char qtd; extern char* fila_msgs[]; //char* paux=  (char*)0xC44C;
 
 char* msg = "\r\nTESTE\r\n";//DEON //
+volatile unsigned char cont3 = 0, var = 0xF0;
 volatile unsigned char v1 = 'A',v2 = 'B', v3 = 'C';//, v4 = 'd';//teste de memoria com valores fixos, DEON
-volatile unsigned char* vetor_ptr[] = {&v1,&v2, &v3};// &v4}; //{&P1IN, &P2IN, &P3IN, &v4};
+volatile unsigned char* vetor_ptr[] = {&v1,&v2, &P3IN, &var};// &v4}; //{&P1IN, &P2IN, &P3IN, &v4};
 
 char e = 0, cont = 0; static char i = 0; //variaveis do depurador
 char SendId = 1;
-#define clear_e_cont_txie_pc e = 0; cont = 0; IE2 &= ~UCA0TXIE; pc = 0
+#define clear_e_cont_txie_pc e = 0; cont = 0; IE2 &= ~UCA0TXIE; pc = 0;
 
 #pragma vector=TIMER1_A1_VECTOR
 __interrupt void TIMER1_A1_ISR_HOOK(void){//RTI do timer E421
@@ -43,6 +44,10 @@ __interrupt void TIMER1_A1_ISR_HOOK(void){//RTI do timer E421
 			}
 		}//e == 2
 
+		if(++cont3 >= 100){
+		    var ^= 255;
+		    cont3 = 0;
+		}
 		pula://para gerar o ponto no intuito de marcar que o proximo byte é o RAW inicial
 		TA1CCR2 += TEMPO_TICK; // timer1 contando até seu máximo de 65535(modo 2)
 		tick++;//obrigatório para que a biblioteca do temporizador funcione

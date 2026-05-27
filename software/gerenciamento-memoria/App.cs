@@ -21,9 +21,9 @@ namespace gerenciamento_memoria {
 
         private string str_buffer = "";
         private string str_ready = "";
+        private int[] raw_buffer = new int[4];
+        private int[] raw_ready = new int[4];
         private int raw_counter = 0;
-        private int[] raw_buffer = new int[3];
-        private int[] raw_ready = new int[3];
         private STATE read_state = STATE.DONE;
 
         public App() {
@@ -37,6 +37,9 @@ namespace gerenciamento_memoria {
         /* Connection Functions                  */
         /* ====================================  */
         private void DoConnection(string port = "") {
+            read_state = STATE.DONE;
+            raw_counter = 0;
+
             if (!string.IsNullOrEmpty(port)) {
                 Console.WriteLine("here");
                 selected_port = port;
@@ -54,6 +57,9 @@ namespace gerenciamento_memoria {
         }
 
         private void DoDesconnection() {
+            read_state = STATE.DONE;
+            raw_counter = 0;
+
             if (com.IsConnected()) {
                 if (com.Close(selected_port)) {
                     Console.WriteLine($"Porta [{selected_port}] encerrada.");
@@ -104,6 +110,7 @@ namespace gerenciamento_memoria {
                         break;
 
                     case STATE.RAW:
+                        //Console.WriteLine(v);
                         raw_buffer[raw_counter] = v;
                         raw_counter++;
                         break;
@@ -159,10 +166,10 @@ namespace gerenciamento_memoria {
                 // Accepts the hex notation
                 try {
                     if (int.TryParse(text, out int address)) {
-                        Console.WriteLine($"row: {row} || add: {address} || {string.Join(",", raw_ready)}");
+                        // Console.WriteLine($"row: {row} || add: {address} || {string.Join(",", raw_ready)}");
 
-                        datagrid.Rows[row].Cells[2].Value = raw_ready[address].ToString("X");
-                        datagrid.Rows[row].Cells[1].Value = raw_ready[address];
+                        datagrid.Rows[row].Cells[1].Value = raw_ready[address].ToString("X");
+                        datagrid.Rows[row].Cells[2].Value = raw_ready[address];
                         
                         //datagrid.Rows[row].Cells[1].Value = raw_ready[address].ToString("X");   // Hex Read column
                         //datagrid.Rows[row].Cells[2].Value = raw_ready[address];                 // Decimal Read column
@@ -178,7 +185,10 @@ namespace gerenciamento_memoria {
         private void SendData(object sender, EventArgs e) {
             string value = textboxCMD.Text;
             textboxCMD.Clear();
-            if (!string.IsNullOrEmpty(value)) com.Write(value);
+            /*if (value.Trim() == "r")*/
+            read_state = STATE.DONE;
+            raw_counter = 0;
+            if (!string.IsNullOrEmpty(value)) com.WriteChar(value);
         }
 
         /* ====================================  */
@@ -223,15 +233,59 @@ namespace gerenciamento_memoria {
         // When the user finish edit a cell
         private void dataGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
             RenderTable();
-            //int row = e.RowIndex;
-            //if (row < 0) return;
-            //// Handles "text null" error.
-            //string text;
-            //try {
-            //    text = datagrid.Rows[row].Cells[0].Value.ToString();
-            //} catch {
-            //    text = "";
-            //}
+            int row = e.RowIndex;
+            if (row < 0) return;
+            // Handles "text null" error.
+
+            string text;
+            try {
+                // Address column
+                text = datagrid.Rows[row].Cells[0].Value.ToString();
+            } catch {
+                text = "";
+            }
+
+            if (text.Contains("x")) text = text.Split('x')[1];
+            byte indice = 0, dec = 0;
+            // Accepts the hex notation
+            try {
+                indice = byte.Parse(text);
+            } catch {
+            }
+
+            string str_hex;
+            string str_dec;
+
+            try {
+                str_hex = datagrid.Rows[row].Cells[3].Value.ToString();
+            } catch {
+                str_hex = "";
+            }
+            try {
+                str_dec = datagrid.Rows[row].Cells[4].Value.ToString();
+            } catch {
+                str_dec = "";
+            }
+
+
+            if (str_hex.Contains("x")) str_hex = str_hex.Split('x')[1];
+            try {
+                dec = byte.Parse(str_dec);
+                Console.WriteLine($"i:{indice} | d:{str_dec}");
+                WriteInMSPArray(indice, dec);
+            } catch {}
+            // Accepts the hex notation
+            /*try {
+                if (byte.TryParse(str_hex, out byte hex)) {
+                    // Console.WriteLine($"row: {row} || add: {address} || {string.Join(",", raw_ready)}");
+                    //WriteInMSPArray();
+                    Console.WriteLine($"Indice: {} | Valor: {hex}");               // Decimal Read column
+                }
+            } catch {
+                // Address NaN
+                //continue;
+            }*/
+
 
             //// Accepts the hex notation
             //if (text.Contains("x")) text = text.Split('x')[1];
@@ -283,6 +337,22 @@ namespace gerenciamento_memoria {
 
         private void comboxPorts_SelectedIndexChanged(object sender, EventArgs e) {
             DoDesconnection();
+        }
+
+        private void btnDebug_Click(object sender, EventArgs e) {
+            read_state = STATE.DONE;
+            com.WriteBreak();
+            com.WriteRaw(251);
+            com.WriteRaw(0);
+            com.WriteRaw(10);
+        }
+
+        private void WriteInMSPArray(byte i, byte raw) {
+            read_state = STATE.DONE;
+            com.WriteBreak();
+            com.WriteRaw(251); // Cmd 251
+            com.WriteRaw(i);
+            com.WriteRaw(raw);
         }
     }
 }
