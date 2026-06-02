@@ -11,6 +11,11 @@ char string1[8]; //const char string1[] = { "Everton\r\n" };//tem que ser \r\n n
 volatile unsigned char* pc = 0;// aponta para ninguem
 unsigned int i = 0; char j = 0;
 
+/*
+ * INIT FUNCTION
+powershell.exe -ExecutionPolicy Bypass -File "C:\flash-ch340.ps1" "${CG_TOOL_HEX}" "${BuildArtifactFileName}" "${BuildArtifactFileBaseName}"
+*/
+
 char* str = "ola, bom dia";
 void imprima(char* ptr_C);
 int main(void){

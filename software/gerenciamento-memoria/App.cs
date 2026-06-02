@@ -16,7 +16,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace gerenciamento_memoria {
     public partial class App : Form {
-        
+
         public Communication com;               // Object that handles a communication
         private string selected_port = null;    // Default port, data_list and 
 
@@ -38,7 +38,7 @@ namespace gerenciamento_memoria {
         /* ====================================  */
         /* Connection Functions                  */
         /* ====================================  */
-        
+
         // Open a connection
         private void DoConnection(string port = "") {
             reading_state = STATE.DONE;
@@ -217,7 +217,7 @@ namespace gerenciamento_memoria {
                 textBoxUserMsg.AppendText(str_ready.Replace("\n", "\r\n"));
             } else {
                 //Console.WriteLine($"[TEXT] {str_ready}");
-                textBoxMsg.SelectionColor = str_ready.Contains("ERRO")? Color.Red : Color.Black;
+                textBoxMsg.SelectionColor = str_ready.Contains("ERRO") ? Color.Red : Color.Black;
                 textBoxMsg.AppendText(str_ready);
                 textBoxMsg.ScrollToCaret();
             }
@@ -310,7 +310,7 @@ namespace gerenciamento_memoria {
                 foreach (DataGridViewCell cell in dataGrid.Rows[row].Cells) {
                     cell.Style.BackColor = Color.LightPink;
                 }
-                
+
                 // Play sound
                 System.Media.SystemSounds.Hand.Play();
             }
@@ -509,6 +509,50 @@ namespace gerenciamento_memoria {
             if (e.KeyCode == Keys.Enter) {
                 WriteText(sender, e);
                 e.SuppressKeyPress = true;
+            }
+        }
+
+        /* ====================================  */
+        /* Write Code to MSP                     */
+        /* ====================================  */
+        private void btnWriteMSP_Click(object sender, EventArgs e) {
+            // 1. Caminhos dos arquivos (mantidos do seu original)
+            string pathfile = @"C:\Users\jvcr\workspace\ufpi\Eng.Eletrica - ArqSisComp\hardware\Transmissor_USCIA_TX(v3)\Debug\Transmissor_USCIA_TX.txt";
+            string execmd = @"C:\BSLDEMO-2.01c.exe";
+
+            // 2. Defina a porta COM que você deseja usar (ex: COM3)
+            string comPort = selected_port;
+
+            // 3. Monta a string de argumentos exatamente no formato comentado:
+            // Formatado como: "C:\BSLDEMO-2.01c.exe -cCOM3 -m1 -ij -s2 +epr "C:\Caminho\Para\O\Arquivo.txt"
+            //string arguments = $"\"$bsl\" \"-c{comPort}\" -m1 -ij -s2 +epr \"{pathfile}\"";
+            string arguments = $"-c{comPort} -m1 -ij -s2 +epr {pathfile}";
+
+            try {
+                DoDesconnection();
+                // 4. Configura a inicialização do processo
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.FileName = execmd;       // O executável
+                startInfo.Arguments = arguments;   // Os argumentos/parâmetros
+
+                // Opcional: Oculta a janela preta do CMD se preferir, ou deixe false para ver o BSL rodando
+                startInfo.CreateNoWindow = false;
+                startInfo.UseShellExecute = false;
+
+                Console.WriteLine($"Executando:");
+                Console.WriteLine($"{execmd} {arguments}");
+
+                // 5. Executa o processo
+                using (Process process = Process.Start(startInfo)) {
+                    // Opcional: Faz o seu programa C# esperar o BSL terminar antes de continuar
+                    process.WaitForExit();
+
+                    MessageBox.Show("Processo de gravação finalizado!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            } catch (Exception ex) {
+                MessageBox.Show($"Erro ao executar o BSLDEMO: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            } finally {
+                DoConnection(comPort); // Reconnect after writing to MSP
             }
         }
     }
