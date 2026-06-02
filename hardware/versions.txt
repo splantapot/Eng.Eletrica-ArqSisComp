@@ -1,0 +1,8 @@
+V1:
+Uso do temporizador pr transmissão de mensagens.
+
+V2:
+Uso do break (10 bits em low na transmissão 8N1) para início da transmissão.
+
+V3:
+Uso de um caractere especial (U) para início da transmissão.
