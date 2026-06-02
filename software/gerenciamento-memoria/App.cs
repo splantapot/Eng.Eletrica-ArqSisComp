@@ -151,10 +151,10 @@ namespace gerenciamento_memoria {
         /* ====================================  */
 
         // Send Data to Device
-        private void SendData(object sender, EventArgs e) {
+        private void SendCmd(object sender, EventArgs e) {
             string value = textboxCMD.Text;
             textboxCMD.Clear();
-            if (!string.IsNullOrEmpty(value)) com.WriteChar(value);
+            if (!string.IsNullOrEmpty(value)) com.WriteStr(value);
         }
 
         private void btnDebug_Click(object sender, EventArgs e) {
@@ -175,6 +175,7 @@ namespace gerenciamento_memoria {
         /* Renderers controllers                 */
         /* ====================================  */
 
+        // Render the String Buffer in respective TextBox
         private void RenderStrBuffer(bool isUserStr = false) {
             if (this.InvokeRequired) {
                 this.Invoke(new Action(() => RenderStrBuffer(isUserStr)));
@@ -190,12 +191,14 @@ namespace gerenciamento_memoria {
             }
         }
 
+        // Organizes the Raw Buffer and calls the render of the Data Grid
         private void RenderRawBuffer() {
             raw_ready = (int[])raw_buffer.Clone();
             //Console.WriteLine($"{raw_ready}");
             RenderUpdatedTable();
         }
 
+        // Render Raw Buffer in Data Grid
         private void RenderUpdatedTable() {
             if (this.InvokeRequired) {
                 this.Invoke(new Action(() => RenderRawBuffer()));
@@ -244,13 +247,6 @@ namespace gerenciamento_memoria {
         // When the user finish edit a cell
         private void dataGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
             
-        }
-
-        private void cmdBox_KeyDown(object sender, KeyEventArgs e) {
-            if (e.KeyCode == Keys.Enter) {
-                SendData(sender, e);
-                e.SuppressKeyPress = true;
-            }
         }
 
         /* ====================================  */
@@ -313,6 +309,8 @@ namespace gerenciamento_memoria {
         /* ====================================  */
         /* Utils                                 */
         /* ====================================  */
+
+        // Get the index of the row, that is in the first cell of the row, -1 if error
         private int _getRowIndex(int row) {
             try {
                 // Cell0 = ix
@@ -320,6 +318,14 @@ namespace gerenciamento_memoria {
             } catch {
                 return -1;
             }
+        }
+
+        // Shortcuts from keyboard
+        private void _cmdBox_KeyDown(object sender, KeyEventArgs e) {
+            //if (e.KeyCode == Keys.Enter) {
+            //    SendData(sender, e);
+            //    e.SuppressKeyPress = true;
+            //}
         }
     }
 }

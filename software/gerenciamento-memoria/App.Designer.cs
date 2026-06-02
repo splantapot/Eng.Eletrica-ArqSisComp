@@ -25,19 +25,25 @@
         private void InitializeComponent() {
             this.btnAddRow = new System.Windows.Forms.Button();
             this.panelDatagrid = new System.Windows.Forms.Panel();
+            this.splitTop = new System.Windows.Forms.SplitContainer();
             this.dataGrid = new System.Windows.Forms.DataGridView();
             this.colIndexes = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colReadHex = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colReadDec = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colWriteHex = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colWriteDec = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnClearUserMsg = new System.Windows.Forms.Button();
+            this.labelUserMsg = new System.Windows.Forms.Label();
+            this.textBoxUserMsg = new System.Windows.Forms.TextBox();
             this.panelButtons = new System.Windows.Forms.Panel();
+            this.btnAdd4Rows = new System.Windows.Forms.Button();
             this.btnDesconnect = new System.Windows.Forms.Button();
             this.btnConnected = new System.Windows.Forms.Button();
             this.comboxPorts = new System.Windows.Forms.ComboBox();
             this.btnRmvRow = new System.Windows.Forms.Button();
             this.panelMsg = new System.Windows.Forms.Panel();
             this.splitMsg = new System.Windows.Forms.SplitContainer();
+            this.btnClearMsg = new System.Windows.Forms.Button();
             this.textboxMsg = new System.Windows.Forms.TextBox();
             this.labelMsg = new System.Windows.Forms.Label();
             this.textboxCMDReg = new System.Windows.Forms.TextBox();
@@ -52,13 +58,11 @@
             this.btnSendCmd = new System.Windows.Forms.Button();
             this.textboxCMD = new System.Windows.Forms.TextBox();
             this.labelCMD = new System.Windows.Forms.Label();
-            this.splitTop = new System.Windows.Forms.SplitContainer();
-            this.textBoxUserMsg = new System.Windows.Forms.TextBox();
-            this.labelUserMsg = new System.Windows.Forms.Label();
-            this.btnAdd4Rows = new System.Windows.Forms.Button();
-            this.btnClearMsg = new System.Windows.Forms.Button();
-            this.btnClearUserMsg = new System.Windows.Forms.Button();
             this.panelDatagrid.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitTop)).BeginInit();
+            this.splitTop.Panel1.SuspendLayout();
+            this.splitTop.Panel2.SuspendLayout();
+            this.splitTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             this.panelButtons.SuspendLayout();
             this.panelMsg.SuspendLayout();
@@ -66,10 +70,6 @@
             this.splitMsg.Panel1.SuspendLayout();
             this.splitMsg.Panel2.SuspendLayout();
             this.splitMsg.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitTop)).BeginInit();
-            this.splitTop.Panel1.SuspendLayout();
-            this.splitTop.Panel2.SuspendLayout();
-            this.splitTop.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnAddRow
@@ -90,6 +90,26 @@
             this.panelDatagrid.Name = "panelDatagrid";
             this.panelDatagrid.Size = new System.Drawing.Size(684, 207);
             this.panelDatagrid.TabIndex = 7;
+            // 
+            // splitTop
+            // 
+            this.splitTop.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitTop.Location = new System.Drawing.Point(0, 0);
+            this.splitTop.Name = "splitTop";
+            // 
+            // splitTop.Panel1
+            // 
+            this.splitTop.Panel1.Controls.Add(this.dataGrid);
+            // 
+            // splitTop.Panel2
+            // 
+            this.splitTop.Panel2.Controls.Add(this.btnClearUserMsg);
+            this.splitTop.Panel2.Controls.Add(this.labelUserMsg);
+            this.splitTop.Panel2.Controls.Add(this.textBoxUserMsg);
+            this.splitTop.Size = new System.Drawing.Size(684, 207);
+            this.splitTop.SplitterDistance = 342;
+            this.splitTop.SplitterWidth = 6;
+            this.splitTop.TabIndex = 1;
             // 
             // dataGrid
             // 
@@ -152,6 +172,41 @@
             this.colWriteDec.ToolTipText = "Escrever Decimal";
             this.colWriteDec.Width = 55;
             // 
+            // btnClearUserMsg
+            // 
+            this.btnClearUserMsg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClearUserMsg.Location = new System.Drawing.Point(264, 6);
+            this.btnClearUserMsg.Name = "btnClearUserMsg";
+            this.btnClearUserMsg.Size = new System.Drawing.Size(67, 23);
+            this.btnClearUserMsg.TabIndex = 15;
+            this.btnClearUserMsg.Text = "Limpar";
+            this.btnClearUserMsg.UseVisualStyleBackColor = true;
+            this.btnClearUserMsg.Click += new System.EventHandler(this.btnClearUserMsg_Click);
+            // 
+            // labelUserMsg
+            // 
+            this.labelUserMsg.AutoSize = true;
+            this.labelUserMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelUserMsg.Location = new System.Drawing.Point(7, 9);
+            this.labelUserMsg.Name = "labelUserMsg";
+            this.labelUserMsg.Size = new System.Drawing.Size(147, 16);
+            this.labelUserMsg.TabIndex = 14;
+            this.labelUserMsg.Text = "Mensagens do Usuário";
+            // 
+            // textBoxUserMsg
+            // 
+            this.textBoxUserMsg.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxUserMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxUserMsg.Location = new System.Drawing.Point(3, 32);
+            this.textBoxUserMsg.Multiline = true;
+            this.textBoxUserMsg.Name = "textBoxUserMsg";
+            this.textBoxUserMsg.ReadOnly = true;
+            this.textBoxUserMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxUserMsg.Size = new System.Drawing.Size(328, 169);
+            this.textBoxUserMsg.TabIndex = 1;
+            // 
             // panelButtons
             // 
             this.panelButtons.Controls.Add(this.btnAdd4Rows);
@@ -165,6 +220,16 @@
             this.panelButtons.Name = "panelButtons";
             this.panelButtons.Size = new System.Drawing.Size(684, 46);
             this.panelButtons.TabIndex = 8;
+            // 
+            // btnAdd4Rows
+            // 
+            this.btnAdd4Rows.Location = new System.Drawing.Point(89, 6);
+            this.btnAdd4Rows.Name = "btnAdd4Rows";
+            this.btnAdd4Rows.Size = new System.Drawing.Size(30, 34);
+            this.btnAdd4Rows.TabIndex = 9;
+            this.btnAdd4Rows.Text = "x4";
+            this.btnAdd4Rows.UseVisualStyleBackColor = true;
+            this.btnAdd4Rows.Click += new System.EventHandler(this.btnAdd4Rows_Click);
             // 
             // btnDesconnect
             // 
@@ -252,6 +317,17 @@
             this.splitMsg.SplitterWidth = 6;
             this.splitMsg.TabIndex = 0;
             // 
+            // btnClearMsg
+            // 
+            this.btnClearMsg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClearMsg.Location = new System.Drawing.Point(267, 8);
+            this.btnClearMsg.Name = "btnClearMsg";
+            this.btnClearMsg.Size = new System.Drawing.Size(67, 23);
+            this.btnClearMsg.TabIndex = 14;
+            this.btnClearMsg.Text = "Limpar";
+            this.btnClearMsg.UseVisualStyleBackColor = true;
+            this.btnClearMsg.Click += new System.EventHandler(this.btnClearMsg_Click);
+            // 
             // textboxMsg
             // 
             this.textboxMsg.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -288,7 +364,7 @@
             this.textboxCMDReg.Name = "textboxCMDReg";
             this.textboxCMDReg.ReadOnly = true;
             this.textboxCMDReg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textboxCMDReg.Size = new System.Drawing.Size(263, 54);
+            this.textboxCMDReg.Size = new System.Drawing.Size(261, 54);
             this.textboxCMDReg.TabIndex = 1;
             // 
             // labelCMDReg
@@ -304,7 +380,7 @@
             // btnBITSET
             // 
             this.btnBITSET.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBITSET.Location = new System.Drawing.Point(207, 82);
+            this.btnBITSET.Location = new System.Drawing.Point(205, 82);
             this.btnBITSET.Name = "btnBITSET";
             this.btnBITSET.Size = new System.Drawing.Size(67, 52);
             this.btnBITSET.TabIndex = 12;
@@ -314,7 +390,7 @@
             // btnBITCLR
             // 
             this.btnBITCLR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBITCLR.Location = new System.Drawing.Point(134, 82);
+            this.btnBITCLR.Location = new System.Drawing.Point(132, 82);
             this.btnBITCLR.Name = "btnBITCLR";
             this.btnBITCLR.Size = new System.Drawing.Size(67, 52);
             this.btnBITCLR.TabIndex = 11;
@@ -328,7 +404,7 @@
             this.textboxCMDBit.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textboxCMDBit.Location = new System.Drawing.Point(47, 111);
             this.textboxCMDBit.Name = "textboxCMDBit";
-            this.textboxCMDBit.Size = new System.Drawing.Size(81, 23);
+            this.textboxCMDBit.Size = new System.Drawing.Size(79, 23);
             this.textboxCMDBit.TabIndex = 10;
             // 
             // labelSetBit
@@ -358,7 +434,7 @@
             this.textboxCMDAddress.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textboxCMDAddress.Location = new System.Drawing.Point(47, 82);
             this.textboxCMDAddress.Name = "textboxCMDAddress";
-            this.textboxCMDAddress.Size = new System.Drawing.Size(81, 23);
+            this.textboxCMDAddress.Size = new System.Drawing.Size(79, 23);
             this.textboxCMDAddress.TabIndex = 7;
             // 
             // labelSpCMD
@@ -374,13 +450,13 @@
             // btnSendCmd
             // 
             this.btnSendCmd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSendCmd.Location = new System.Drawing.Point(207, 25);
+            this.btnSendCmd.Location = new System.Drawing.Point(205, 25);
             this.btnSendCmd.Name = "btnSendCmd";
             this.btnSendCmd.Size = new System.Drawing.Size(67, 23);
             this.btnSendCmd.TabIndex = 5;
             this.btnSendCmd.Text = "Enviar";
             this.btnSendCmd.UseVisualStyleBackColor = true;
-            this.btnSendCmd.Click += new System.EventHandler(this.SendData);
+            this.btnSendCmd.Click += new System.EventHandler(this.SendCmd);
             // 
             // textboxCMD
             // 
@@ -389,9 +465,9 @@
             this.textboxCMD.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textboxCMD.Location = new System.Drawing.Point(11, 25);
             this.textboxCMD.Name = "textboxCMD";
-            this.textboxCMD.Size = new System.Drawing.Size(190, 23);
+            this.textboxCMD.Size = new System.Drawing.Size(188, 23);
             this.textboxCMD.TabIndex = 1;
-            this.textboxCMD.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmdBox_KeyDown);
+            this.textboxCMD.KeyDown += new System.Windows.Forms.KeyEventHandler(this._cmdBox_KeyDown);
             // 
             // labelCMD
             // 
@@ -402,82 +478,6 @@
             this.labelCMD.Size = new System.Drawing.Size(73, 16);
             this.labelCMD.TabIndex = 0;
             this.labelCMD.Text = "Comandos";
-            // 
-            // splitTop
-            // 
-            this.splitTop.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitTop.Location = new System.Drawing.Point(0, 0);
-            this.splitTop.Name = "splitTop";
-            // 
-            // splitTop.Panel1
-            // 
-            this.splitTop.Panel1.Controls.Add(this.dataGrid);
-            // 
-            // splitTop.Panel2
-            // 
-            this.splitTop.Panel2.Controls.Add(this.btnClearUserMsg);
-            this.splitTop.Panel2.Controls.Add(this.labelUserMsg);
-            this.splitTop.Panel2.Controls.Add(this.textBoxUserMsg);
-            this.splitTop.Size = new System.Drawing.Size(684, 207);
-            this.splitTop.SplitterDistance = 342;
-            this.splitTop.SplitterWidth = 6;
-            this.splitTop.TabIndex = 1;
-            // 
-            // textBoxUserMsg
-            // 
-            this.textBoxUserMsg.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxUserMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxUserMsg.Location = new System.Drawing.Point(3, 32);
-            this.textBoxUserMsg.Multiline = true;
-            this.textBoxUserMsg.Name = "textBoxUserMsg";
-            this.textBoxUserMsg.ReadOnly = true;
-            this.textBoxUserMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxUserMsg.Size = new System.Drawing.Size(330, 169);
-            this.textBoxUserMsg.TabIndex = 1;
-            // 
-            // labelUserMsg
-            // 
-            this.labelUserMsg.AutoSize = true;
-            this.labelUserMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelUserMsg.Location = new System.Drawing.Point(7, 9);
-            this.labelUserMsg.Name = "labelUserMsg";
-            this.labelUserMsg.Size = new System.Drawing.Size(147, 16);
-            this.labelUserMsg.TabIndex = 14;
-            this.labelUserMsg.Text = "Mensagens do Usuário";
-            // 
-            // btnAdd4Rows
-            // 
-            this.btnAdd4Rows.Location = new System.Drawing.Point(89, 6);
-            this.btnAdd4Rows.Name = "btnAdd4Rows";
-            this.btnAdd4Rows.Size = new System.Drawing.Size(30, 34);
-            this.btnAdd4Rows.TabIndex = 9;
-            this.btnAdd4Rows.Text = "x4";
-            this.btnAdd4Rows.UseVisualStyleBackColor = true;
-            this.btnAdd4Rows.Click += new System.EventHandler(this.btnAdd4Rows_Click);
-            // 
-            // btnClearMsg
-            // 
-            this.btnClearMsg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClearMsg.Location = new System.Drawing.Point(267, 8);
-            this.btnClearMsg.Name = "btnClearMsg";
-            this.btnClearMsg.Size = new System.Drawing.Size(67, 23);
-            this.btnClearMsg.TabIndex = 14;
-            this.btnClearMsg.Text = "Limpar";
-            this.btnClearMsg.UseVisualStyleBackColor = true;
-            this.btnClearMsg.Click += new System.EventHandler(this.btnClearMsg_Click);
-            // 
-            // btnClearUserMsg
-            // 
-            this.btnClearUserMsg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClearUserMsg.Location = new System.Drawing.Point(266, 6);
-            this.btnClearUserMsg.Name = "btnClearUserMsg";
-            this.btnClearUserMsg.Size = new System.Drawing.Size(67, 23);
-            this.btnClearUserMsg.TabIndex = 15;
-            this.btnClearUserMsg.Text = "Limpar";
-            this.btnClearUserMsg.UseVisualStyleBackColor = true;
-            this.btnClearUserMsg.Click += new System.EventHandler(this.btnClearUserMsg_Click);
             // 
             // App
             // 
@@ -491,6 +491,11 @@
             this.Name = "App";
             this.Text = "Gerenciamento de Memória do MSP430";
             this.panelDatagrid.ResumeLayout(false);
+            this.splitTop.Panel1.ResumeLayout(false);
+            this.splitTop.Panel2.ResumeLayout(false);
+            this.splitTop.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitTop)).EndInit();
+            this.splitTop.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).EndInit();
             this.panelButtons.ResumeLayout(false);
             this.panelMsg.ResumeLayout(false);
@@ -500,11 +505,6 @@
             this.splitMsg.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitMsg)).EndInit();
             this.splitMsg.ResumeLayout(false);
-            this.splitTop.Panel1.ResumeLayout(false);
-            this.splitTop.Panel2.ResumeLayout(false);
-            this.splitTop.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitTop)).EndInit();
-            this.splitTop.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

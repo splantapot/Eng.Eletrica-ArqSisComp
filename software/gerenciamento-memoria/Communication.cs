@@ -133,7 +133,7 @@ namespace gerenciamento_memoria {
             _serialPort.Write(new[] { data }, 0, 1);
         }
 
-        public void WriteChar(string str) {
+        public void WriteStr(string str) {
             _serialPort.Write(str);
         }
 
