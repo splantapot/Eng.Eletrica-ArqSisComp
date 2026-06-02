@@ -151,19 +151,31 @@ namespace gerenciamento_memoria {
         /* ====================================  */
 
         // Send Data to Device
-        private void WriteCmd(object sender, EventArgs e) {
+        private void WriteText(object sender, EventArgs e) {
             string value = textboxCMD.Text;
             textboxCMD.Clear();
             if (!string.IsNullOrEmpty(value)) com.WriteStr(value);
         }
 
+        private void WriteCmd(byte cmd, byte address, byte value) {
+            com.WriteBreak();
+            com.WriteRaw(cmd);
+            com.WriteRaw(address);
+            com.WriteRaw(value);
+        }
 
         private void WriteByteInIx(byte raw, byte ix) {
-            com.WriteBreak();
-            com.WriteRaw(251); // Cmd 251: Write in MSP
-            com.WriteRaw(ix);
-            com.WriteRaw(raw);
+            WriteCmd(251, ix, raw);
         }
+
+        // bitset: 0000 0000 0000 0100 (address 0x02), cmd = 190 low, cmd = 191 high
+        // break -> cmd:252 -> address -> valor to write low (byte = 4)
+        // break -> cmd:253 -> address -> valor to write high (byte = 0)
+        private void WriteBitset(byte address, byte high, byte low) {
+            WriteCmd(190, address, low);
+            WriteCmd(191, address, high);
+        }
+
 
         /* ====================================  */
         /* Renderers controllers                 */
@@ -247,15 +259,35 @@ namespace gerenciamento_memoria {
                 WriteByteInIx((byte)value, (byte)ix);
                 _clearRowWrite(row);
             } else {
+                /*
                 // Clear Colors
                 _clearDatagridPaint();
                 // Paint the line
                 foreach (DataGridViewCell cell in dataGrid.Rows[row].Cells) {
                     cell.Style.BackColor = Color.Coral;
                 }
+                */
                 // Play sound
                 System.Media.SystemSounds.Hand.Play();
             }
+        }
+
+        /* ====================================  */
+        /* Special Commands                      */
+        /* ====================================  */
+
+        private void btnBITSET_Click(object sender, EventArgs e) {
+            int address = _getHex(textboxCMDAddress.Text);
+            int bit = _getDec(textboxCMDBit.Text);
+            if (bit < 0 || bit > 15 || address < 0 || address > 255) {
+                // Play sound
+                System.Media.SystemSounds.Hand.Play();
+                return;
+            }
+            //byte full_byte = 
+            //if (bit > )
+            Console.WriteLine($"> Address: {address}, Value: {bit}");
+            // P3OUT is 19 in hex, 
         }
 
         /* ====================================  */
@@ -346,6 +378,25 @@ namespace gerenciamento_memoria {
             } catch {
                 return -1;
             }
+        }
+
+        private int _getHex(string text) {
+            // Tries to return hex
+            try {
+                // Cell3 = whex
+                text = text.Trim();
+                if (text.Contains('x')) text = text.Split('x')[1]; //Accept "0x" notation
+                //Console.WriteLine($">{text}");
+                return int.Parse(text, System.Globalization.NumberStyles.HexNumber);
+            } catch { return -1; }
+        }
+
+        private int _getDec(string text) {
+            // Tries to return dec
+            try {
+                // Cell4 = wdec
+                return int.Parse(text.Trim());
+            } catch { return -1; }
         }
 
         private bool _clearRowWrite(int row) {

@@ -11,42 +11,59 @@ volatile unsigned char indice, valor, break_condicao;
 extern volatile unsigned char* vetor_ptr[];//vetor de endereços na memória
 volatile unsigned char comando = 0;
 unsigned char escreve_endereco(unsigned char dado) {
-	static unsigned char estado = 0;//estado inicializado com zero
+    static unsigned char estado = 0;//estado inicializado com zero
 
-	if(break_condicao) {//detectou o break gerado pelo C#?
-		UCA0STAT &= ~UCBRK;  estado = 1;
-		return 1;
-	}
+    if(break_condicao) {//detectou o break gerado pelo C#?
+        UCA0STAT &= ~UCBRK;  estado = 1;
+        return 1;
+    }
 
-	// break 251 2 0
-	switch (estado) {//indice, valor, id
-	case 1: // Recebe byte de comando
-		estado = 2;
-		comando = dado;
-		break;
-	case 2:
-		estado = 3;
-		indice = dado;
-		break;
-		// valor = dado;
-	case 3:     // Recebe valor de 8 bits a ser escrito na memória
-		estado = 0;
-		valor = dado;
-		switch(comando){//tipo de comando de escrita
-		case 251:
-			*(vetor_ptr[indice]) = valor;//escreve efetivamente na memória
-			break;
-			//case 252:
-		}
-		return 3;
-		break;
+    // break 251 2 0
+    switch (estado) {//indice, valor, id
+    case 1: // Recebe byte de comando
+        estado = 2;
+        comando = dado;
+        break;
+    case 2:
+        estado = 3;
+        indice = dado;
+        break;
+        // valor = dado;
+    case 3:     // Recebe valor de 8 bits a ser escrito na memória
+        estado = 0;
+        valor = dado;
+        switch(comando) {//tipo de comando de escrita
+        /*
+        // BITSET no low byte
+        case 190:
+            if (indice != 0x19) break;  // Proteção durante os testes
+            *(char*)indice |= valor;
+            break;
 
-		default:
-			estado = 0;
-			break;
-	}//switch estado
+        case 191:
+            if (indice != 0x19) break;  // Proteção durante os testes
+            *(char*)indice |= (valor<<8);
+            break;
+        */
 
-	return estado;
+        // Escreve efetivamente na memória, por índice
+        case 251:
+            *(vetor_ptr[indice]) = valor;
+            break;
+            //case 252:
+        case 190:
+            break;
+        }
+        return 3;
+        break;
+
+
+        default:
+            estado = 0;
+            break;
+    }//switch estado
+
+    return estado;
 }//escreve_endereco()
 
 

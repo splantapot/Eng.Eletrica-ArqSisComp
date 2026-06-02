@@ -46,7 +46,7 @@
             this.btnClearMsg = new System.Windows.Forms.Button();
             this.textboxMsg = new System.Windows.Forms.TextBox();
             this.labelMsg = new System.Windows.Forms.Label();
-            this.textboxCMDReg = new System.Windows.Forms.TextBox();
+            this.textboxCMDLog = new System.Windows.Forms.TextBox();
             this.labelCMDReg = new System.Windows.Forms.Label();
             this.btnBITSET = new System.Windows.Forms.Button();
             this.btnBITCLR = new System.Windows.Forms.Button();
@@ -175,7 +175,7 @@
             // btnClearUserMsg
             // 
             this.btnClearUserMsg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClearUserMsg.Location = new System.Drawing.Point(264, 6);
+            this.btnClearUserMsg.Location = new System.Drawing.Point(262, 6);
             this.btnClearUserMsg.Name = "btnClearUserMsg";
             this.btnClearUserMsg.Size = new System.Drawing.Size(67, 23);
             this.btnClearUserMsg.TabIndex = 15;
@@ -204,7 +204,7 @@
             this.textBoxUserMsg.Name = "textBoxUserMsg";
             this.textBoxUserMsg.ReadOnly = true;
             this.textBoxUserMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxUserMsg.Size = new System.Drawing.Size(328, 169);
+            this.textBoxUserMsg.Size = new System.Drawing.Size(326, 169);
             this.textBoxUserMsg.TabIndex = 1;
             // 
             // panelButtons
@@ -299,7 +299,7 @@
             // 
             // splitMsg.Panel2
             // 
-            this.splitMsg.Panel2.Controls.Add(this.textboxCMDReg);
+            this.splitMsg.Panel2.Controls.Add(this.textboxCMDLog);
             this.splitMsg.Panel2.Controls.Add(this.labelCMDReg);
             this.splitMsg.Panel2.Controls.Add(this.btnBITSET);
             this.splitMsg.Panel2.Controls.Add(this.btnBITCLR);
@@ -353,19 +353,19 @@
             this.labelMsg.TabIndex = 0;
             this.labelMsg.Text = "Mensagens";
             // 
-            // textboxCMDReg
+            // textboxCMDLog
             // 
-            this.textboxCMDReg.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.textboxCMDLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textboxCMDReg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textboxCMDReg.Location = new System.Drawing.Point(11, 163);
-            this.textboxCMDReg.Multiline = true;
-            this.textboxCMDReg.Name = "textboxCMDReg";
-            this.textboxCMDReg.ReadOnly = true;
-            this.textboxCMDReg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textboxCMDReg.Size = new System.Drawing.Size(261, 54);
-            this.textboxCMDReg.TabIndex = 1;
+            this.textboxCMDLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textboxCMDLog.Location = new System.Drawing.Point(11, 163);
+            this.textboxCMDLog.Multiline = true;
+            this.textboxCMDLog.Name = "textboxCMDLog";
+            this.textboxCMDLog.ReadOnly = true;
+            this.textboxCMDLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textboxCMDLog.Size = new System.Drawing.Size(259, 54);
+            this.textboxCMDLog.TabIndex = 1;
             // 
             // labelCMDReg
             // 
@@ -380,17 +380,18 @@
             // btnBITSET
             // 
             this.btnBITSET.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBITSET.Location = new System.Drawing.Point(205, 82);
+            this.btnBITSET.Location = new System.Drawing.Point(130, 82);
             this.btnBITSET.Name = "btnBITSET";
             this.btnBITSET.Size = new System.Drawing.Size(67, 52);
             this.btnBITSET.TabIndex = 12;
             this.btnBITSET.Text = "BITSET";
             this.btnBITSET.UseVisualStyleBackColor = true;
+            this.btnBITSET.Click += new System.EventHandler(this.btnBITSET_Click);
             // 
             // btnBITCLR
             // 
             this.btnBITCLR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBITCLR.Location = new System.Drawing.Point(132, 82);
+            this.btnBITCLR.Location = new System.Drawing.Point(203, 82);
             this.btnBITCLR.Name = "btnBITCLR";
             this.btnBITCLR.Size = new System.Drawing.Size(67, 52);
             this.btnBITCLR.TabIndex = 11;
@@ -404,7 +405,7 @@
             this.textboxCMDBit.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textboxCMDBit.Location = new System.Drawing.Point(47, 111);
             this.textboxCMDBit.Name = "textboxCMDBit";
-            this.textboxCMDBit.Size = new System.Drawing.Size(79, 23);
+            this.textboxCMDBit.Size = new System.Drawing.Size(77, 23);
             this.textboxCMDBit.TabIndex = 10;
             // 
             // labelSetBit
@@ -434,7 +435,7 @@
             this.textboxCMDAddress.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textboxCMDAddress.Location = new System.Drawing.Point(47, 82);
             this.textboxCMDAddress.Name = "textboxCMDAddress";
-            this.textboxCMDAddress.Size = new System.Drawing.Size(79, 23);
+            this.textboxCMDAddress.Size = new System.Drawing.Size(77, 23);
             this.textboxCMDAddress.TabIndex = 7;
             // 
             // labelSpCMD
@@ -450,13 +451,13 @@
             // btnSendCmd
             // 
             this.btnSendCmd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSendCmd.Location = new System.Drawing.Point(205, 25);
+            this.btnSendCmd.Location = new System.Drawing.Point(203, 25);
             this.btnSendCmd.Name = "btnSendCmd";
             this.btnSendCmd.Size = new System.Drawing.Size(67, 23);
             this.btnSendCmd.TabIndex = 5;
             this.btnSendCmd.Text = "Enviar";
             this.btnSendCmd.UseVisualStyleBackColor = true;
-            this.btnSendCmd.Click += new System.EventHandler(this.WriteCmd);
+            this.btnSendCmd.Click += new System.EventHandler(this.WriteText);
             // 
             // textboxCMD
             // 
@@ -465,7 +466,7 @@
             this.textboxCMD.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textboxCMD.Location = new System.Drawing.Point(11, 25);
             this.textboxCMD.Name = "textboxCMD";
-            this.textboxCMD.Size = new System.Drawing.Size(188, 23);
+            this.textboxCMD.Size = new System.Drawing.Size(186, 23);
             this.textboxCMD.TabIndex = 1;
             this.textboxCMD.KeyDown += new System.Windows.Forms.KeyEventHandler(this._cmdBox_KeyDown);
             // 
@@ -531,7 +532,7 @@
         private System.Windows.Forms.Label labelSetAddress;
         private System.Windows.Forms.TextBox textboxCMDAddress;
         private System.Windows.Forms.Label labelSpCMD;
-        private System.Windows.Forms.TextBox textboxCMDReg;
+        private System.Windows.Forms.TextBox textboxCMDLog;
         private System.Windows.Forms.Label labelCMDReg;
         private System.Windows.Forms.Button btnBITSET;
         private System.Windows.Forms.Button btnBITCLR;
