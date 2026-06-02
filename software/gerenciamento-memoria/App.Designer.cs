@@ -80,7 +80,7 @@
             this.btnAddRow.TabIndex = 1;
             this.btnAddRow.Text = "Adicionar Linha";
             this.btnAddRow.UseVisualStyleBackColor = true;
-            this.btnAddRow.Click += new System.EventHandler(this.addRowBtn_Click);
+            this.btnAddRow.Click += new System.EventHandler(this.btnAddRow_Click);
             // 
             // panelDatagrid
             // 
@@ -204,7 +204,7 @@
             this.btnRmvRow.TabIndex = 4;
             this.btnRmvRow.Text = "Remover Linha Selecionada";
             this.btnRmvRow.UseVisualStyleBackColor = true;
-            this.btnRmvRow.Click += new System.EventHandler(this.rmvRowBtn_Click);
+            this.btnRmvRow.Click += new System.EventHandler(this.btnRmvRow_Click);
             // 
             // panelMsg
             // 
@@ -452,6 +452,7 @@
             this.btnAdd4Rows.TabIndex = 9;
             this.btnAdd4Rows.Text = "x4";
             this.btnAdd4Rows.UseVisualStyleBackColor = true;
+            this.btnAdd4Rows.Click += new System.EventHandler(this.btnAdd4Rows_Click);
             // 
             // btnClearMsg
             // 

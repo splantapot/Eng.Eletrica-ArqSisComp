@@ -173,7 +173,7 @@ namespace gerenciamento_memoria {
         }
 
         /* ====================================  */
-        /* Interface manipulation                */
+        /* Renderers controllers                 */
         /* ====================================  */
 
         private void RenderStrBuffer(bool isUserStr = false) {
@@ -193,22 +193,40 @@ namespace gerenciamento_memoria {
 
         private void RenderRawBuffer() {
             raw_ready = (int[])raw_buffer.Clone();
-            Console.WriteLine($"{raw_ready}");
+            //Console.WriteLine($"{raw_ready}");
+            RenderUpdatedTable();
         }
 
-        private void cmdBox_KeyDown(object sender, KeyEventArgs e) {
-            if (e.KeyCode == Keys.Enter) {
-                SendData(sender, e);
-                e.SuppressKeyPress = true;
+        private void RenderUpdatedTable() {
+            if (this.InvokeRequired) {
+                this.Invoke(new Action(() => RenderRawBuffer()));
+            }
+
+            for (int row = 0; row < dataGrid.RowCount; row++) {
+                // ix rhex rdec whex wdec
+                int ix = _getRowIndex(row);
+                if (ix < 0 || ix >= raw_ready.Length) continue; // Skips on error
+                dataGrid.Rows[row].Cells[1].Value = raw_ready[ix].ToString("X");    //Hex
+                dataGrid.Rows[row].Cells[2].Value = raw_ready[ix];                  //Dec
             }
         }
 
-        public void addRowBtn_Click(object sender, EventArgs e) {
+        /* ====================================  */
+        /* Datagrid buttons                      */
+        /* ====================================  */
+
+        private void btnAddRow_Click(object sender, EventArgs e) {
             dataGrid.Rows.Add("x", "-", "-");
         }
 
+        private void btnAdd4Rows_Click(object sender, EventArgs e) {
+            for (int i = 0; i < 4; i++) {
+                dataGrid.Rows.Add(i.ToString(), "-", "-");
+            }
+        }
+
         // Clear rows button
-        private void rmvRowBtn_Click(object sender, EventArgs e) {
+        private void btnRmvRow_Click(object sender, EventArgs e) {
             if (dataGrid.SelectedRows.Count > 0) {
                 // Clear all rows, starting by the last
                 // This way, the rows will be removed without index error
@@ -223,6 +241,13 @@ namespace gerenciamento_memoria {
         // When the user finish edit a cell
         private void dataGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
             
+        }
+
+        private void cmdBox_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Enter) {
+                SendData(sender, e);
+                e.SuppressKeyPress = true;
+            }
         }
 
         /* ====================================  */
@@ -263,6 +288,18 @@ namespace gerenciamento_memoria {
 
         private void comboxPorts_SelectedIndexChanged(object sender, EventArgs e) {
             DoDesconnection();
+        }
+
+        /* ====================================  */
+        /* Utils                                 */
+        /* ====================================  */
+        private int _getRowIndex(int row) {
+            try {
+                // Cell0 = ix
+                return int.Parse(dataGrid.Rows[row].Cells[0].Value.ToString());
+            } catch {
+                return -1;
+            }
         }
     }
 }
