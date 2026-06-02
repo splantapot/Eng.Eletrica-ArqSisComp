@@ -65,6 +65,8 @@ int main(void){
 		  break;
 	  case 1:
 		  imprima("Hoje\r\n");
+		  printf();
+		  // A single comment
 		  break;
 	  case 2:
 		  imprima("BOM\r\n");

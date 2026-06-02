@@ -24,11 +24,11 @@ namespace gerenciamento_memoria {
         private int[] raw_buffer = new int[4];
         private int[] raw_ready = new int[4];
         private int raw_counter = 0;
-        private STATE read_state = STATE.DONE;
+        private STATE reading_state = STATE.DONE;
 
         public App() {
             InitializeComponent();      // APP Init
-            com = new Communication();  // Instance Communication onj
+            com = new Communication();  // Instance Communication Obj
             RenderPortBox();            // Init setting
             DoConnection();
         }
@@ -36,10 +36,9 @@ namespace gerenciamento_memoria {
         /* ====================================  */
         /* Connection Functions                  */
         /* ====================================  */
+        
+        // Open a connection
         private void DoConnection(string port = "") {
-            read_state = STATE.DONE;
-            raw_counter = 0;
-
             if (!string.IsNullOrEmpty(port)) {
                 Console.WriteLine("here");
                 selected_port = port;
@@ -56,10 +55,8 @@ namespace gerenciamento_memoria {
             }
         }
 
+        // Close the connection
         private void DoDesconnection() {
-            read_state = STATE.DONE;
-            raw_counter = 0;
-
             if (com.IsConnected()) {
                 if (com.Close(selected_port)) {
                     Console.WriteLine($"Porta [{selected_port}] encerrada.");
@@ -70,140 +67,133 @@ namespace gerenciamento_memoria {
             }
         }
 
+        // Connect button
         private void btnConnected_Click(object sender, EventArgs e) {
             string PORT = comboxPorts.SelectedItem.ToString();
             DoConnection(PORT);
         }
 
+        // Disconnect button
         private void btnDesconnect_Click(object sender, EventArgs e) {
             DoDesconnection();
         }
 
         /* ====================================  */
-        /* Data Functions                        */
+        /* Get Serial Data Functions             */
         /* ====================================  */
 
         // Handles the Port Sended Data
         public void ReadData(object sender, SerialDataReceivedEventArgs e) {
             SerialPort sp = (SerialPort)sender;
             while (sp.BytesToRead > 0) {
-                int v = (int)sp.ReadByte();
-                //Console.WriteLine(v);
-
-                // Break detection
-                if (v == 0) {
-                    read_state = STATE.WAITING;
-                    continue;
-                }
-
-                switch (read_state) {
-                    case STATE.WAITING:
-                        // If state bit == 1, read_state is STRING
-                        // If state bit == 3, read_state is RAW
-                        read_state = (STATE) v;
-                        RenderBuffer();
-                        raw_counter = 0;
-                        break;
-
-                    case STATE.STRING:
-                        str_buffer += (char) v;
-                        break;
-
-                    case STATE.RAW:
-                        //Console.WriteLine(v);
-                        raw_buffer[raw_counter] = v;
-                        raw_counter++;
-                        break;
-                }
+                byte v = (byte)sp.ReadByte();
+                ProcessByte(v);
             }
         }
-        private void RenderBuffer() {
-            if (!string.IsNullOrEmpty(str_buffer)) {
-                str_ready = str_buffer;
-                str_buffer = "";
-                RenderString();
-                // Console.WriteLine($"STR: {str_ready}");
-            }
 
-            for (int i = 0; i < raw_buffer.Length; i++) {
-                raw_ready[i] = raw_buffer[i];
-            }
-            RenderTable();
-            //Console.WriteLine($"BFF: {raw_buffer[0]}");
-            //Console.WriteLine($"RAW: {raw_ready.Count}");
-            //if (raw_buffer.Length > 0) {
-            //    raw_ready = raw_buffer;
-            //    raw_buffer.Clear();
-            //}
-        }
-
-        private void RenderString() {
-            if (this.InvokeRequired) {
-                this.Invoke(new Action(() => { RenderString(); }));
-                return;
-            }
-            textboxMsg.AppendText(str_ready);
-        }
-
-        private void RenderTable() {
-            if (this.InvokeRequired) {
-                this.Invoke(new Action(() => { RenderTable(); }));
-                return;
-            }
-
-            for (int row = 0; row < datagrid.Rows.Count; row++) {
-                // Handles "text null" error.
-                string text;
-                try {
-                    // Address column
-                    text = datagrid.Rows[row].Cells[0].Value.ToString();
-                } catch {
-                    text = "";
-                }
-
-                if (text.Contains("x")) text = text.Split('x')[1];
-
-                // Accepts the hex notation
-                try {
-                    if (int.TryParse(text, out int address)) {
-                        // Console.WriteLine($"row: {row} || add: {address} || {string.Join(",", raw_ready)}");
-
-                        datagrid.Rows[row].Cells[1].Value = raw_ready[address].ToString("X");
-                        datagrid.Rows[row].Cells[2].Value = raw_ready[address];
-                        
-                        //datagrid.Rows[row].Cells[1].Value = raw_ready[address].ToString("X");   // Hex Read column
-                        //datagrid.Rows[row].Cells[2].Value = raw_ready[address];                 // Decimal Read column
+        public void ProcessByte(byte v) {
+            switch (reading_state) {
+                case STATE.DONE:
+                    if (v == Communication.dummyByte) {
+                        // Receive 'U'
+                        reading_state = STATE.WAITING_ID;
+                    } else {
+                        // Start the buffer for UserMsg (Header Failure)
+                        str_buffer = ((char)v).ToString();
+                        reading_state = STATE.USER_STRING;
                     }
-                } catch {
-                    // Address NaN
-                    continue;
-                }
+                    break;
+
+                case STATE.WAITING_ID:
+                    if (v == (byte)STATE.STRING) {
+                        // Header to System String
+                        str_buffer = "";
+                        reading_state = STATE.STRING;
+                    } else if (v == (byte)STATE.RAW) {
+                        // Header to Raw Data
+                        raw_counter = 0;
+                        reading_state = STATE.RAW;
+                    } else {
+                        // Wasn't a valid header, start the buffer for UserMsg (Header Failure)
+                        // Recoveries the first dummy byte and add the current byte to the buffer
+                        str_buffer = ((char)Communication.dummyByte).ToString() + (char)v;
+                        reading_state = STATE.USER_STRING;
+                    }
+                    break;
+
+                case STATE.STRING:
+                case STATE.USER_STRING:
+                    if (v == '\n') {
+                        // Calls the Buffer Render
+                        RenderStrBuffer(reading_state == STATE.USER_STRING);
+                        reading_state = STATE.DONE;
+                    } else {
+                        str_buffer += (char)v;
+                    }
+                    break;
+
+                case STATE.RAW:
+                    raw_buffer[raw_counter++] = v;
+                    if (raw_counter >= 4) {
+                        // Calls the Buffer Render
+                        RenderRawBuffer();
+                        reading_state = STATE.DONE;
+                    }
+                    break;
+
+                default:
+                    reading_state = STATE.DONE;
+                    break;
             }
         }
+
+        /* ====================================  */
+        /* Write Serial Data Functions           */
+        /* ====================================  */
 
         // Send Data to Device
         private void SendData(object sender, EventArgs e) {
             string value = textboxCMD.Text;
             textboxCMD.Clear();
-            /*if (value.Trim() == "r")*/
-            read_state = STATE.DONE;
-            raw_counter = 0;
             if (!string.IsNullOrEmpty(value)) com.WriteChar(value);
         }
 
+        private void btnDebug_Click(object sender, EventArgs e) {
+            com.WriteBreak();
+            com.WriteRaw(251);
+            com.WriteRaw(0);
+            com.WriteRaw(10);
+        }
+
+        private void WriteInMSPArray(byte i, byte raw) {
+            com.WriteBreak();
+            com.WriteRaw(251); // Cmd 251
+            com.WriteRaw(i);
+            com.WriteRaw(raw);
+        }
+
         /* ====================================  */
-        /* Print Functions                        */
+        /* Interface manipulation                */
         /* ====================================  */
 
-        private void PrintBufferInApp() {
+        private void RenderStrBuffer(bool isUserStr = false) {
             if (this.InvokeRequired) {
-                this.Invoke(new Action(() => { PrintBufferInApp(); }));
-                return;
+                this.Invoke(new Action(() => RenderStrBuffer(isUserStr)));
             }
 
-            //Console.WriteLine(data_str_buffer);
-            //textboxMsg.AppendText(data_str_buffer);
-            //data_str_buffer = "";
+            str_ready = str_buffer;
+            if (isUserStr) {
+                //Console.WriteLine($"[USER] {str_ready}");
+                textBoxUserMsg.AppendText(str_ready+"\n");
+            } else {
+                //Console.WriteLine($"[TEXT] {str_ready}");
+                textboxMsg.AppendText(str_ready+"\n");
+            }
+        }
+
+        private void RenderRawBuffer() {
+            raw_ready = (int[])raw_buffer.Clone();
+            Console.WriteLine($"{raw_ready}");
         }
 
         private void cmdBox_KeyDown(object sender, KeyEventArgs e) {
@@ -214,16 +204,16 @@ namespace gerenciamento_memoria {
         }
 
         public void addRowBtn_Click(object sender, EventArgs e) {
-            datagrid.Rows.Add("x", "-", "-");
+            dataGrid.Rows.Add("x", "-", "-");
         }
 
         // Clear rows button
         private void rmvRowBtn_Click(object sender, EventArgs e) {
-            if (datagrid.SelectedRows.Count > 0) {
+            if (dataGrid.SelectedRows.Count > 0) {
                 // Clear all rows, starting by the last
                 // This way, the rows will be removed without index error
-                for (int i = datagrid.SelectedRows.Count - 1; i >= 0; i--) {
-                    datagrid.Rows.RemoveAt(datagrid.SelectedRows[i].Index);
+                for (int i = dataGrid.SelectedRows.Count - 1; i >= 0; i--) {
+                    dataGrid.Rows.RemoveAt(dataGrid.SelectedRows[i].Index);
                 }
             } else {
                 MessageBox.Show("Selecione pelo menos uma linha para remover.");
@@ -232,71 +222,7 @@ namespace gerenciamento_memoria {
 
         // When the user finish edit a cell
         private void dataGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
-            RenderTable();
-            int row = e.RowIndex;
-            if (row < 0) return;
-            // Handles "text null" error.
-
-            string text;
-            try {
-                // Address column
-                text = datagrid.Rows[row].Cells[0].Value.ToString();
-            } catch {
-                text = "";
-            }
-
-            if (text.Contains("x")) text = text.Split('x')[1];
-            byte indice = 0, dec = 0;
-            // Accepts the hex notation
-            try {
-                indice = byte.Parse(text);
-            } catch {
-            }
-
-            string str_hex;
-            string str_dec;
-
-            try {
-                str_hex = datagrid.Rows[row].Cells[3].Value.ToString();
-            } catch {
-                str_hex = "";
-            }
-            try {
-                str_dec = datagrid.Rows[row].Cells[4].Value.ToString();
-            } catch {
-                str_dec = "";
-            }
-
-
-            if (str_hex.Contains("x")) str_hex = str_hex.Split('x')[1];
-            try {
-                dec = byte.Parse(str_dec);
-                Console.WriteLine($"i:{indice} | d:{str_dec}");
-                WriteInMSPArray(indice, dec);
-            } catch {}
-            // Accepts the hex notation
-            /*try {
-                if (byte.TryParse(str_hex, out byte hex)) {
-                    // Console.WriteLine($"row: {row} || add: {address} || {string.Join(",", raw_ready)}");
-                    //WriteInMSPArray();
-                    Console.WriteLine($"Indice: {} | Valor: {hex}");               // Decimal Read column
-                }
-            } catch {
-                // Address NaN
-                //continue;
-            }*/
-
-
-            //// Accepts the hex notation
-            //if (text.Contains("x")) text = text.Split('x')[1];
-            //try {
-            //    if (int.TryParse(text, out int address)) {
-            //        datagrid.Rows[row].Cells[1].Value = raw_ready[address].ToString("X");   // Hex
-            //        datagrid.Rows[row].Cells[2].Value = raw_ready[address];                 // Decimal
-            //    }
-            //} catch {
-            //    return; // Couldn't read
-            //}
+            
         }
 
         /* ====================================  */
@@ -337,22 +263,6 @@ namespace gerenciamento_memoria {
 
         private void comboxPorts_SelectedIndexChanged(object sender, EventArgs e) {
             DoDesconnection();
-        }
-
-        private void btnDebug_Click(object sender, EventArgs e) {
-            read_state = STATE.DONE;
-            com.WriteBreak();
-            com.WriteRaw(251);
-            com.WriteRaw(0);
-            com.WriteRaw(10);
-        }
-
-        private void WriteInMSPArray(byte i, byte raw) {
-            read_state = STATE.DONE;
-            com.WriteBreak();
-            com.WriteRaw(251); // Cmd 251
-            com.WriteRaw(i);
-            com.WriteRaw(raw);
         }
     }
 }
