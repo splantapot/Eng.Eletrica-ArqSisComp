@@ -168,6 +168,7 @@
             // 
             // btnDesconnect
             // 
+            this.btnDesconnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDesconnect.Location = new System.Drawing.Point(601, 6);
             this.btnDesconnect.Name = "btnDesconnect";
             this.btnDesconnect.Size = new System.Drawing.Size(80, 34);
@@ -178,6 +179,7 @@
             // 
             // btnConnected
             // 
+            this.btnConnected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnConnected.Location = new System.Drawing.Point(515, 6);
             this.btnConnected.Name = "btnConnected";
             this.btnConnected.Size = new System.Drawing.Size(80, 34);
@@ -188,6 +190,7 @@
             // 
             // comboxPorts
             // 
+            this.comboxPorts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboxPorts.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboxPorts.FormattingEnabled = true;
             this.comboxPorts.Location = new System.Drawing.Point(405, 12);
@@ -463,6 +466,7 @@
             this.btnClearMsg.TabIndex = 14;
             this.btnClearMsg.Text = "Limpar";
             this.btnClearMsg.UseVisualStyleBackColor = true;
+            this.btnClearMsg.Click += new System.EventHandler(this.btnClearMsg_Click);
             // 
             // btnClearUserMsg
             // 
@@ -473,6 +477,7 @@
             this.btnClearUserMsg.TabIndex = 15;
             this.btnClearUserMsg.Text = "Limpar";
             this.btnClearUserMsg.UseVisualStyleBackColor = true;
+            this.btnClearUserMsg.Click += new System.EventHandler(this.btnClearUserMsg_Click);
             // 
             // App
             // 

@@ -40,7 +40,6 @@ namespace gerenciamento_memoria {
         // Open a connection
         private void DoConnection(string port = "") {
             if (!string.IsNullOrEmpty(port)) {
-                Console.WriteLine("here");
                 selected_port = port;
             }
 
@@ -205,9 +204,13 @@ namespace gerenciamento_memoria {
             for (int row = 0; row < dataGrid.RowCount; row++) {
                 // ix rhex rdec whex wdec
                 int ix = _getRowIndex(row);
-                if (ix < 0 || ix >= raw_ready.Length) continue; // Skips on error
-                dataGrid.Rows[row].Cells[1].Value = raw_ready[ix].ToString("X");    //Hex
-                dataGrid.Rows[row].Cells[2].Value = raw_ready[ix];                  //Dec
+                try {
+                    dataGrid.Rows[row].Cells[1].Value = raw_ready[ix].ToString("X");    //Hex
+                    dataGrid.Rows[row].Cells[2].Value = raw_ready[ix];                  //Dec
+                } catch {
+                    dataGrid.Rows[row].Cells[1].Value = "?";    //Hex
+                    dataGrid.Rows[row].Cells[2].Value = "?";    //Dec
+                }
             }
         }
 
@@ -216,12 +219,12 @@ namespace gerenciamento_memoria {
         /* ====================================  */
 
         private void btnAddRow_Click(object sender, EventArgs e) {
-            dataGrid.Rows.Add("x", "-", "-");
+            dataGrid.Rows.Add("x", "?", "?");
         }
 
         private void btnAdd4Rows_Click(object sender, EventArgs e) {
             for (int i = 0; i < 4; i++) {
-                dataGrid.Rows.Add(i.ToString(), "-", "-");
+                dataGrid.Rows.Add(i.ToString(), "?", "?");
             }
         }
 
@@ -248,6 +251,23 @@ namespace gerenciamento_memoria {
                 SendData(sender, e);
                 e.SuppressKeyPress = true;
             }
+        }
+
+        /* ====================================  */
+        /* Cleaning Buttons                      */
+        /* ====================================  */
+        private void btnClearUserMsg_Click(object sender, EventArgs e) {
+            if (this.InvokeRequired) {
+                this.Invoke(new Action(() => RenderRawBuffer()));
+            }
+            textBoxUserMsg.Clear();
+        }
+
+        private void btnClearMsg_Click(object sender, EventArgs e) {
+            if (this.InvokeRequired) {
+                this.Invoke(new Action(() => RenderRawBuffer()));
+            }
+            textboxMsg.Clear();
         }
 
         /* ====================================  */
