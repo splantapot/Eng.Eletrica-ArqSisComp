@@ -7,7 +7,8 @@
  */
 #include <msp430g2553.h>
 
-volatile unsigned char indice, valor, break_condicao;
+volatile unsigned char indice, indice_alto, valor, break_condicao;
+volatile unsigned int end16;
 extern volatile unsigned char* vetor_ptr[];//vetor de endereços na memória
 volatile unsigned char comando = 0;
 unsigned char escreve_endereco(unsigned char dado) {
@@ -33,34 +34,56 @@ unsigned char escreve_endereco(unsigned char dado) {
         estado = 0;
         valor = dado;
         switch(comando) {//tipo de comando de escrita
-        /*
-        // BITSET no low byte
-        case 190:
-            if (indice != 0x19) break;  // Proteção durante os testes
-            *(char*)indice |= valor;
+        // 0x0019;
+        case 190:   //BITSET
+            // cmd, indice (baixo), indice(alto), valor
+            estado = 4;
+            indice_alto = dado;
+            break;
+        case 191:   //BITCLR
+            // cmd, indice (baixo), indice(alto), valor
+            estado = 5;
+            indice_alto = dado;
+            break;
+        case 192:   //BITINV
+            // cmd, indice (baixo), indice(alto), valor
+            estado = 6;
+            indice_alto = dado;
             break;
 
-        case 191:
-            if (indice != 0x19) break;  // Proteção durante os testes
-            *(char*)indice |= (valor<<8);
-            break;
-        */
-
-        // Escreve efetivamente na memória, por índice
+            // Escreve efetivamente na memória, por índice
         case 251:
             *(vetor_ptr[indice]) = valor;
-            break;
-            //case 252:
-        case 190:
             break;
         }
         return 3;
         break;
 
-
         default:
             estado = 0;
             break;
+
+    case 4:
+        // BITSET
+        estado = 0;
+        end16 = (((unsigned int) (indice_alto << 8)) + ((unsigned int) indice));
+        *(unsigned char*)end16 |= dado;
+        return 3;
+        break;
+    case 5:
+        // BITCLR
+        estado = 0;
+        end16 = (((unsigned int) (indice_alto << 8)) + ((unsigned int) indice));
+        *(unsigned char*)end16 &= ~dado;
+        return 3;
+        break;
+    case 6:
+        // BITCLR
+        estado = 0;
+        end16 = (((unsigned int) (indice_alto << 8)) + ((unsigned int) indice));
+        *(unsigned char*)end16 ^= dado;
+        return 3;
+        break;
     }//switch estado
 
     return estado;

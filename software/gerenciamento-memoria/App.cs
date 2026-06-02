@@ -8,6 +8,7 @@ using System.Drawing.Printing;
 using System.IO.Ports;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -31,6 +32,7 @@ namespace gerenciamento_memoria {
             com = new Communication();  // Instance Communication Obj
             RenderPortBox();            // Init setting
             DoConnection();
+            //if () MessageBox.Show("Conectado automaticamente!");
         }
 
         /* ====================================  */
@@ -39,6 +41,11 @@ namespace gerenciamento_memoria {
         
         // Open a connection
         private void DoConnection(string port = "") {
+            reading_state = STATE.DONE;
+            if (com.IsConnected()) {
+                MessageBox.Show("Já conectado!");
+                return;
+            }
             if (!string.IsNullOrEmpty(port)) {
                 selected_port = port;
             }
@@ -48,6 +55,8 @@ namespace gerenciamento_memoria {
                 // Prevents error on setting callback to break and read
                 com.RmvReadCallback(ReadData);
                 com.SetReadCallback(ReadData);
+                btnConnected.Enabled = false;
+                btnDesconnect.Enabled = true;
             } else {
                 Console.WriteLine($"Porta [{selected_port}] não aberta (falha).");
                 MessageBox.Show("Não foi possível encontrar a porta.");
@@ -56,6 +65,9 @@ namespace gerenciamento_memoria {
 
         // Close the connection
         private void DoDesconnection() {
+            reading_state = STATE.DONE;
+            btnDesconnect.Enabled = false;
+            btnConnected.Enabled = true;
             if (com.IsConnected()) {
                 if (com.Close(selected_port)) {
                     Console.WriteLine($"Porta [{selected_port}] encerrada.");
@@ -124,6 +136,7 @@ namespace gerenciamento_memoria {
                 case STATE.USER_STRING:
                     if (v == '\n') {
                         // Calls the Buffer Render
+                        str_buffer += (char)v;
                         RenderStrBuffer(reading_state == STATE.USER_STRING);
                         reading_state = STATE.DONE;
                     } else {
@@ -152,30 +165,41 @@ namespace gerenciamento_memoria {
 
         // Send Data to Device
         private void WriteText(object sender, EventArgs e) {
-            string value = textboxCMD.Text;
-            textboxCMD.Clear();
-            if (!string.IsNullOrEmpty(value)) com.WriteStr(value);
+            try {
+                string value = textboxCMD.Text;
+                textboxCMD.Clear();
+                if (!string.IsNullOrEmpty(value)) com.WriteStr(value);
+                AddComandToLog($"Cmd: '{value}'");
+            } catch {
+                MessageBox.Show("Verifique a conexão da porta.");
+            }
         }
 
         private void WriteCmd(byte cmd, byte address, byte value) {
-            com.WriteBreak();
-            com.WriteRaw(cmd);
-            com.WriteRaw(address);
-            com.WriteRaw(value);
+            try {
+                com.WriteBreak();
+                com.WriteRaw(cmd);
+                com.WriteRaw(address);
+                com.WriteRaw(value);
+            } catch {
+                MessageBox.Show("Verifique a conexão da porta.");
+            }
+        }
+        private void WriteCmd(byte cmd, byte address_low, byte address_high, byte value) {
+            try {
+                com.WriteBreak();
+                com.WriteRaw(cmd);
+                com.WriteRaw(address_low);
+                com.WriteRaw(address_high);
+                com.WriteRaw(value);
+            } catch {
+                MessageBox.Show("Verifique a conexão da porta.");
+            }
         }
 
         private void WriteByteInIx(byte raw, byte ix) {
             WriteCmd(251, ix, raw);
         }
-
-        // bitset: 0000 0000 0000 0100 (address 0x02), cmd = 190 low, cmd = 191 high
-        // break -> cmd:252 -> address -> valor to write low (byte = 4)
-        // break -> cmd:253 -> address -> valor to write high (byte = 0)
-        private void WriteBitset(byte address, byte high, byte low) {
-            WriteCmd(190, address, low);
-            WriteCmd(191, address, high);
-        }
-
 
         /* ====================================  */
         /* Renderers controllers                 */
@@ -185,15 +209,17 @@ namespace gerenciamento_memoria {
         private void RenderStrBuffer(bool isUserStr = false) {
             if (this.InvokeRequired) {
                 this.Invoke(new Action(() => RenderStrBuffer(isUserStr)));
+                return;
             }
-
             str_ready = str_buffer;
             if (isUserStr) {
                 //Console.WriteLine($"[USER] {str_ready}");
-                textBoxUserMsg.AppendText(str_ready+"\n");
+                textBoxUserMsg.AppendText(str_ready.Replace("\n", "\r\n"));
             } else {
                 //Console.WriteLine($"[TEXT] {str_ready}");
-                textboxMsg.AppendText(str_ready+"\n");
+                textBoxMsg.SelectionColor = str_ready.Contains("ERRO")? Color.Red : Color.Black;
+                textBoxMsg.AppendText(str_ready);
+                textBoxMsg.ScrollToCaret();
             }
         }
 
@@ -208,6 +234,7 @@ namespace gerenciamento_memoria {
         private void RenderUpdatedTable() {
             if (this.InvokeRequired) {
                 this.Invoke(new Action(() => RenderRawBuffer()));
+                return;
             }
 
             for (int row = 0; row < dataGrid.RowCount; row++) {
@@ -221,6 +248,14 @@ namespace gerenciamento_memoria {
                     dataGrid.Rows[row].Cells[2].Value = "?";    //Dec
                 }
             }
+        }
+
+        /* ====================================  */
+        /* Log for Commands                      */
+        /* ====================================  */
+
+        private void AddComandToLog(string log) {
+            textboxCMDLog.AppendText($"{log}\r\n");
         }
 
         /* ====================================  */
@@ -250,8 +285,20 @@ namespace gerenciamento_memoria {
             }
         }
 
+        // When the user start to edit a cell
+        private void dataGrid_CellClick_ClearPaint(object sender, DataGridViewCellEventArgs e) {
+            _clearDatagridPaint();
+        }
+
+        private void dataGrid_CellBeginEdit_ClearPaint(object sender, DataGridViewCellCancelEventArgs e) {
+            _clearDatagridPaint();
+        }
+
         // When the user finish edit a cell
         private void dataGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
+            // Clear Colors
+            _clearDatagridPaint();
+            if (e.ColumnIndex <= 0) return; //blocks for error in edit ix
             int row = e.RowIndex;
             int ix = _getRowIndex(row);
             int value = _getRowValue(row);
@@ -259,14 +306,11 @@ namespace gerenciamento_memoria {
                 WriteByteInIx((byte)value, (byte)ix);
                 _clearRowWrite(row);
             } else {
-                /*
-                // Clear Colors
-                _clearDatagridPaint();
                 // Paint the line
                 foreach (DataGridViewCell cell in dataGrid.Rows[row].Cells) {
-                    cell.Style.BackColor = Color.Coral;
+                    cell.Style.BackColor = Color.LightPink;
                 }
-                */
+                
                 // Play sound
                 System.Media.SystemSounds.Hand.Play();
             }
@@ -276,18 +320,33 @@ namespace gerenciamento_memoria {
         /* Special Commands                      */
         /* ====================================  */
 
+        // P3OUT is 19 in hex, 
+        //Console.WriteLine($"> Address: {address}, Value: {v}");
         private void btnBITSET_Click(object sender, EventArgs e) {
-            int address = _getHex(textboxCMDAddress.Text);
-            int bit = _getDec(textboxCMDBit.Text);
-            if (bit < 0 || bit > 15 || address < 0 || address > 255) {
-                // Play sound
-                System.Media.SystemSounds.Hand.Play();
-                return;
-            }
-            //byte full_byte = 
-            //if (bit > )
-            Console.WriteLine($"> Address: {address}, Value: {bit}");
-            // P3OUT is 19 in hex, 
+            // bitset: 0000 0000 0000 0100 (address 0x02), 
+            // CMD=190, ix (low), ix(high), value
+            var (address, value) = _getSpecialCommandData();
+            if (address < 0) return;
+            WriteCmd(190, (byte)(address % 256), (byte)(address >> 8), value);
+            AddComandToLog($"BITSET: Add [hex]: {address.ToString("X")} | Bit: {Math.Log(value, 2)}");
+        }
+
+        private void btnBITCLR_Click(object sender, EventArgs e) {
+            // bitset: 0000 0000 0000 0100 (address 0x02), 
+            // CMD=191, ix (low), ix(high), value
+            var (address, value) = _getSpecialCommandData();
+            if (address < 0) return;
+            WriteCmd(191, (byte)(address % 256), (byte)(address >> 8), value);
+            AddComandToLog($"BITCLR: Add [hex]: {address.ToString("X")} | Bit: {Math.Log(value, 2)}");
+        }
+
+        private void btnBITINV_Click(object sender, EventArgs e) {
+            // bitset: 0000 0000 0000 0100 (address 0x02), 
+            // CMD=192, ix (low), ix(high), value
+            var (address, value) = _getSpecialCommandData();
+            if (address < 0) return;
+            WriteCmd(192, (byte)(address % 256), (byte)(address >> 8), value);
+            AddComandToLog($"BITINV: Add [hex]: {address.ToString("X")} | Bit: {Math.Log(value, 2)}");
         }
 
         /* ====================================  */
@@ -296,6 +355,7 @@ namespace gerenciamento_memoria {
         private void btnClearUserMsg_Click(object sender, EventArgs e) {
             if (this.InvokeRequired) {
                 this.Invoke(new Action(() => RenderRawBuffer()));
+                return;
             }
             textBoxUserMsg.Clear();
         }
@@ -303,8 +363,17 @@ namespace gerenciamento_memoria {
         private void btnClearMsg_Click(object sender, EventArgs e) {
             if (this.InvokeRequired) {
                 this.Invoke(new Action(() => RenderRawBuffer()));
+                return;
             }
-            textboxMsg.Clear();
+            textBoxMsg.Clear();
+        }
+
+        private void btnClearCMD_Click(object sender, EventArgs e) {
+            if (this.InvokeRequired) {
+                this.Invoke(new Action(() => RenderRawBuffer()));
+                return;
+            }
+            textboxCMDLog.Clear();
         }
 
         /* ====================================  */
@@ -313,6 +382,7 @@ namespace gerenciamento_memoria {
         private void RenderPortBox(bool isInit = false) {
             if (this.InvokeRequired) {
                 this.Invoke(new Action(() => RenderPortBox()));
+                return;
             }
 
             string[] ports = com.GetPortList();
@@ -340,6 +410,9 @@ namespace gerenciamento_memoria {
             // Connected an USB
             if (m.Msg == 0x0219) {
                 RenderPortBox();
+                if (!com.IsConnected()) {
+                    DoDesconnection();
+                }
             }
         }
 
@@ -417,12 +490,26 @@ namespace gerenciamento_memoria {
             }
         }
 
+        private (int address, byte value) _getSpecialCommandData() {
+            int address = _getHex(textboxCMDAddress.Text);
+            int bit = _getDec(textboxCMDBit.Text);
+            if (bit < 0 || bit > 7 || address < 0 || address > 0xFFFF) {
+                // Play sound
+                System.Media.SystemSounds.Hand.Play();
+                MessageBox.Show("Insira um endereço (em hexadecimal) e um bit válidos (bit: 0-7, address: 0-65535).");
+                return (-1, 0);
+            }
+            double value = Math.Pow(2, bit);
+            byte v = (byte)(value % 256);
+            return (address, v);
+        }
+
         // Shortcuts from keyboard
         private void _cmdBox_KeyDown(object sender, KeyEventArgs e) {
-            //if (e.KeyCode == Keys.Enter) {
-            //    SendData(sender, e);
-            //    e.SuppressKeyPress = true;
-            //}
+            if (e.KeyCode == Keys.Enter) {
+                WriteText(sender, e);
+                e.SuppressKeyPress = true;
+            }
         }
     }
 }

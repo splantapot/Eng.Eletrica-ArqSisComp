@@ -44,7 +44,6 @@
             this.panelMsg = new System.Windows.Forms.Panel();
             this.splitMsg = new System.Windows.Forms.SplitContainer();
             this.btnClearMsg = new System.Windows.Forms.Button();
-            this.textboxMsg = new System.Windows.Forms.TextBox();
             this.labelMsg = new System.Windows.Forms.Label();
             this.textboxCMDLog = new System.Windows.Forms.TextBox();
             this.labelCMDReg = new System.Windows.Forms.Label();
@@ -58,6 +57,9 @@
             this.btnSendCmd = new System.Windows.Forms.Button();
             this.textboxCMD = new System.Windows.Forms.TextBox();
             this.labelCMD = new System.Windows.Forms.Label();
+            this.btnBITINV = new System.Windows.Forms.Button();
+            this.btnClearCMD = new System.Windows.Forms.Button();
+            this.textBoxMsg = new System.Windows.Forms.RichTextBox();
             this.panelDatagrid.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitTop)).BeginInit();
             this.splitTop.Panel1.SuspendLayout();
@@ -134,6 +136,8 @@
             this.dataGrid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGrid.Size = new System.Drawing.Size(336, 172);
             this.dataGrid.TabIndex = 0;
+            this.dataGrid.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGrid_CellBeginEdit_ClearPaint);
+            this.dataGrid.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellClick_ClearPaint);
             this.dataGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellEndEdit);
             // 
             // colIndexes
@@ -175,7 +179,7 @@
             // btnClearUserMsg
             // 
             this.btnClearUserMsg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClearUserMsg.Location = new System.Drawing.Point(262, 6);
+            this.btnClearUserMsg.Location = new System.Drawing.Point(254, 6);
             this.btnClearUserMsg.Name = "btnClearUserMsg";
             this.btnClearUserMsg.Size = new System.Drawing.Size(67, 23);
             this.btnClearUserMsg.TabIndex = 15;
@@ -204,7 +208,7 @@
             this.textBoxUserMsg.Name = "textBoxUserMsg";
             this.textBoxUserMsg.ReadOnly = true;
             this.textBoxUserMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxUserMsg.Size = new System.Drawing.Size(326, 169);
+            this.textBoxUserMsg.Size = new System.Drawing.Size(318, 169);
             this.textBoxUserMsg.TabIndex = 1;
             // 
             // panelButtons
@@ -234,7 +238,7 @@
             // btnDesconnect
             // 
             this.btnDesconnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDesconnect.Location = new System.Drawing.Point(601, 6);
+            this.btnDesconnect.Location = new System.Drawing.Point(589, 6);
             this.btnDesconnect.Name = "btnDesconnect";
             this.btnDesconnect.Size = new System.Drawing.Size(80, 34);
             this.btnDesconnect.TabIndex = 7;
@@ -245,7 +249,7 @@
             // btnConnected
             // 
             this.btnConnected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnConnected.Location = new System.Drawing.Point(515, 6);
+            this.btnConnected.Location = new System.Drawing.Point(503, 6);
             this.btnConnected.Name = "btnConnected";
             this.btnConnected.Size = new System.Drawing.Size(80, 34);
             this.btnConnected.TabIndex = 6;
@@ -258,7 +262,7 @@
             this.comboxPorts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboxPorts.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboxPorts.FormattingEnabled = true;
-            this.comboxPorts.Location = new System.Drawing.Point(405, 12);
+            this.comboxPorts.Location = new System.Drawing.Point(393, 12);
             this.comboxPorts.Name = "comboxPorts";
             this.comboxPorts.Size = new System.Drawing.Size(104, 23);
             this.comboxPorts.TabIndex = 5;
@@ -292,13 +296,15 @@
             // 
             // splitMsg.Panel1
             // 
+            this.splitMsg.Panel1.Controls.Add(this.textBoxMsg);
             this.splitMsg.Panel1.Controls.Add(this.btnClearMsg);
-            this.splitMsg.Panel1.Controls.Add(this.textboxMsg);
             this.splitMsg.Panel1.Controls.Add(this.labelMsg);
             this.splitMsg.Panel1.Padding = new System.Windows.Forms.Padding(5);
             // 
             // splitMsg.Panel2
             // 
+            this.splitMsg.Panel2.Controls.Add(this.btnClearCMD);
+            this.splitMsg.Panel2.Controls.Add(this.btnBITINV);
             this.splitMsg.Panel2.Controls.Add(this.textboxCMDLog);
             this.splitMsg.Panel2.Controls.Add(this.labelCMDReg);
             this.splitMsg.Panel2.Controls.Add(this.btnBITSET);
@@ -328,20 +334,6 @@
             this.btnClearMsg.UseVisualStyleBackColor = true;
             this.btnClearMsg.Click += new System.EventHandler(this.btnClearMsg_Click);
             // 
-            // textboxMsg
-            // 
-            this.textboxMsg.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textboxMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textboxMsg.Location = new System.Drawing.Point(8, 34);
-            this.textboxMsg.Multiline = true;
-            this.textboxMsg.Name = "textboxMsg";
-            this.textboxMsg.ReadOnly = true;
-            this.textboxMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textboxMsg.Size = new System.Drawing.Size(326, 186);
-            this.textboxMsg.TabIndex = 0;
-            // 
             // labelMsg
             // 
             this.labelMsg.AutoSize = true;
@@ -364,7 +356,7 @@
             this.textboxCMDLog.Name = "textboxCMDLog";
             this.textboxCMDLog.ReadOnly = true;
             this.textboxCMDLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textboxCMDLog.Size = new System.Drawing.Size(259, 54);
+            this.textboxCMDLog.Size = new System.Drawing.Size(310, 54);
             this.textboxCMDLog.TabIndex = 1;
             // 
             // labelCMDReg
@@ -380,9 +372,9 @@
             // btnBITSET
             // 
             this.btnBITSET.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBITSET.Location = new System.Drawing.Point(130, 82);
+            this.btnBITSET.Location = new System.Drawing.Point(122, 82);
             this.btnBITSET.Name = "btnBITSET";
-            this.btnBITSET.Size = new System.Drawing.Size(67, 52);
+            this.btnBITSET.Size = new System.Drawing.Size(60, 52);
             this.btnBITSET.TabIndex = 12;
             this.btnBITSET.Text = "BITSET";
             this.btnBITSET.UseVisualStyleBackColor = true;
@@ -391,12 +383,13 @@
             // btnBITCLR
             // 
             this.btnBITCLR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBITCLR.Location = new System.Drawing.Point(203, 82);
+            this.btnBITCLR.Location = new System.Drawing.Point(192, 82);
             this.btnBITCLR.Name = "btnBITCLR";
-            this.btnBITCLR.Size = new System.Drawing.Size(67, 52);
+            this.btnBITCLR.Size = new System.Drawing.Size(60, 52);
             this.btnBITCLR.TabIndex = 11;
             this.btnBITCLR.Text = "BITCLR";
             this.btnBITCLR.UseVisualStyleBackColor = true;
+            this.btnBITCLR.Click += new System.EventHandler(this.btnBITCLR_Click);
             // 
             // textboxCMDBit
             // 
@@ -405,7 +398,7 @@
             this.textboxCMDBit.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textboxCMDBit.Location = new System.Drawing.Point(47, 111);
             this.textboxCMDBit.Name = "textboxCMDBit";
-            this.textboxCMDBit.Size = new System.Drawing.Size(77, 23);
+            this.textboxCMDBit.Size = new System.Drawing.Size(69, 23);
             this.textboxCMDBit.TabIndex = 10;
             // 
             // labelSetBit
@@ -435,14 +428,14 @@
             this.textboxCMDAddress.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textboxCMDAddress.Location = new System.Drawing.Point(47, 82);
             this.textboxCMDAddress.Name = "textboxCMDAddress";
-            this.textboxCMDAddress.Size = new System.Drawing.Size(77, 23);
+            this.textboxCMDAddress.Size = new System.Drawing.Size(69, 23);
             this.textboxCMDAddress.TabIndex = 7;
             // 
             // labelSpCMD
             // 
             this.labelSpCMD.AutoSize = true;
             this.labelSpCMD.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelSpCMD.Location = new System.Drawing.Point(8, 63);
+            this.labelSpCMD.Location = new System.Drawing.Point(8, 58);
             this.labelSpCMD.Name = "labelSpCMD";
             this.labelSpCMD.Size = new System.Drawing.Size(136, 16);
             this.labelSpCMD.TabIndex = 6;
@@ -451,7 +444,7 @@
             // btnSendCmd
             // 
             this.btnSendCmd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSendCmd.Location = new System.Drawing.Point(203, 25);
+            this.btnSendCmd.Location = new System.Drawing.Point(254, 25);
             this.btnSendCmd.Name = "btnSendCmd";
             this.btnSendCmd.Size = new System.Drawing.Size(67, 23);
             this.btnSendCmd.TabIndex = 5;
@@ -466,7 +459,7 @@
             this.textboxCMD.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textboxCMD.Location = new System.Drawing.Point(11, 25);
             this.textboxCMD.Name = "textboxCMD";
-            this.textboxCMD.Size = new System.Drawing.Size(186, 23);
+            this.textboxCMD.Size = new System.Drawing.Size(237, 23);
             this.textboxCMD.TabIndex = 1;
             this.textboxCMD.KeyDown += new System.Windows.Forms.KeyEventHandler(this._cmdBox_KeyDown);
             // 
@@ -479,6 +472,40 @@
             this.labelCMD.Size = new System.Drawing.Size(73, 16);
             this.labelCMD.TabIndex = 0;
             this.labelCMD.Text = "Comandos";
+            // 
+            // btnBITINV
+            // 
+            this.btnBITINV.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBITINV.Location = new System.Drawing.Point(261, 82);
+            this.btnBITINV.Name = "btnBITINV";
+            this.btnBITINV.Size = new System.Drawing.Size(60, 52);
+            this.btnBITINV.TabIndex = 14;
+            this.btnBITINV.Text = "BITINV";
+            this.btnBITINV.UseVisualStyleBackColor = true;
+            this.btnBITINV.Click += new System.EventHandler(this.btnBITINV_Click);
+            // 
+            // btnClearCMD
+            // 
+            this.btnClearCMD.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClearCMD.Location = new System.Drawing.Point(254, 137);
+            this.btnClearCMD.Name = "btnClearCMD";
+            this.btnClearCMD.Size = new System.Drawing.Size(67, 23);
+            this.btnClearCMD.TabIndex = 16;
+            this.btnClearCMD.Text = "Limpar";
+            this.btnClearCMD.UseVisualStyleBackColor = true;
+            this.btnClearCMD.Click += new System.EventHandler(this.btnClearCMD_Click);
+            // 
+            // textBoxMsg
+            // 
+            this.textBoxMsg.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxMsg.Location = new System.Drawing.Point(8, 35);
+            this.textBoxMsg.Name = "textBoxMsg";
+            this.textBoxMsg.ReadOnly = true;
+            this.textBoxMsg.Size = new System.Drawing.Size(326, 186);
+            this.textBoxMsg.TabIndex = 15;
+            this.textBoxMsg.Text = "";
             // 
             // App
             // 
@@ -521,7 +548,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colWriteDec;
         private System.Windows.Forms.Panel panelButtons;
         private System.Windows.Forms.Panel panelMsg;
-        private System.Windows.Forms.TextBox textboxMsg;
         private System.Windows.Forms.SplitContainer splitMsg;
         private System.Windows.Forms.Label labelMsg;
         private System.Windows.Forms.Label labelCMD;
@@ -546,6 +572,9 @@
         private System.Windows.Forms.Button btnAdd4Rows;
         private System.Windows.Forms.Button btnClearUserMsg;
         private System.Windows.Forms.Button btnClearMsg;
+        private System.Windows.Forms.Button btnBITINV;
+        private System.Windows.Forms.Button btnClearCMD;
+        private System.Windows.Forms.RichTextBox textBoxMsg;
     }
 }
 
