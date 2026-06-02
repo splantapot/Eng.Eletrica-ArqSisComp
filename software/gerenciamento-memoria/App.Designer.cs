@@ -456,7 +456,7 @@
             this.btnSendCmd.TabIndex = 5;
             this.btnSendCmd.Text = "Enviar";
             this.btnSendCmd.UseVisualStyleBackColor = true;
-            this.btnSendCmd.Click += new System.EventHandler(this.SendCmd);
+            this.btnSendCmd.Click += new System.EventHandler(this.WriteCmd);
             // 
             // textboxCMD
             // 

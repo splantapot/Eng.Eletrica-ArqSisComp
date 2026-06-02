@@ -151,23 +151,17 @@ namespace gerenciamento_memoria {
         /* ====================================  */
 
         // Send Data to Device
-        private void SendCmd(object sender, EventArgs e) {
+        private void WriteCmd(object sender, EventArgs e) {
             string value = textboxCMD.Text;
             textboxCMD.Clear();
             if (!string.IsNullOrEmpty(value)) com.WriteStr(value);
         }
 
-        private void btnDebug_Click(object sender, EventArgs e) {
-            com.WriteBreak();
-            com.WriteRaw(251);
-            com.WriteRaw(0);
-            com.WriteRaw(10);
-        }
 
-        private void WriteInMSPArray(byte i, byte raw) {
+        private void WriteByteInIx(byte raw, byte ix) {
             com.WriteBreak();
-            com.WriteRaw(251); // Cmd 251
-            com.WriteRaw(i);
+            com.WriteRaw(251); // Cmd 251: Write in MSP
+            com.WriteRaw(ix);
             com.WriteRaw(raw);
         }
 
@@ -246,7 +240,22 @@ namespace gerenciamento_memoria {
 
         // When the user finish edit a cell
         private void dataGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
-            
+            int row = e.RowIndex;
+            int ix = _getRowIndex(row);
+            int value = _getRowValue(row);
+            if (value >= 0 && ix >= 0 && ix < 4) {
+                WriteByteInIx((byte)value, (byte)ix);
+                _clearRowWrite(row);
+            } else {
+                // Clear Colors
+                _clearDatagridPaint();
+                // Paint the line
+                foreach (DataGridViewCell cell in dataGrid.Rows[row].Cells) {
+                    cell.Style.BackColor = Color.Coral;
+                }
+                // Play sound
+                System.Media.SystemSounds.Hand.Play();
+            }
         }
 
         /* ====================================  */
@@ -314,9 +323,46 @@ namespace gerenciamento_memoria {
         private int _getRowIndex(int row) {
             try {
                 // Cell0 = ix
-                return int.Parse(dataGrid.Rows[row].Cells[0].Value.ToString());
+                return int.Parse(dataGrid.Rows[row].Cells[0].Value.ToString().Trim());
             } catch {
                 return -1;
+            }
+        }
+
+        private int _getRowValue(int row) {
+            // Tries to return hex
+            try {
+                // Cell3 = whex
+                string text = dataGrid.Rows[row].Cells[3].Value.ToString().Trim();
+                if (text.Contains('x')) text = text.Split('x')[1]; //Accept "0x" notation
+                //Console.WriteLine($">{text}");
+                return int.Parse(text, System.Globalization.NumberStyles.HexNumber);
+            } catch { }
+
+            // Tries to return dec, if hex fails
+            try {
+                // Cell4 = wdec
+                return int.Parse(dataGrid.Rows[row].Cells[4].Value.ToString().Trim());
+            } catch {
+                return -1;
+            }
+        }
+
+        private bool _clearRowWrite(int row) {
+            try {
+                dataGrid.Rows[row].Cells[3].Value = "";
+                dataGrid.Rows[row].Cells[4].Value = "";
+                return true;
+            } catch {
+                return false;
+            }
+        }
+
+        private void _clearDatagridPaint() {
+            foreach (DataGridViewRow row in dataGrid.Rows) {
+                foreach (DataGridViewCell cell in row.Cells) {
+                    cell.Style.BackColor = Color.Empty;
+                }
             }
         }
 
