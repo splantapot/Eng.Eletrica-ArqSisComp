@@ -516,43 +516,64 @@ namespace gerenciamento_memoria {
         /* Write Code to MSP                     */
         /* ====================================  */
         private void btnWriteMSP_Click(object sender, EventArgs e) {
-            // 1. Caminhos dos arquivos (mantidos do seu original)
-            string pathfile = @"C:\Users\jvcr\workspace\ufpi\Eng.Eletrica - ArqSisComp\hardware\Transmissor_USCIA_TX(v3)\Debug\Transmissor_USCIA_TX.txt";
-            string execmd = @"C:\BSLDEMO-2.01c.exe";
+            // 1. Configura o OpenFileDialog para selecionar o arquivo de gravação
+            using (OpenFileDialog openFileDialog = new OpenFileDialog()) {
+                openFileDialog.InitialDirectory = @"C:\Users\jvcr\workspace\ufpi\Eng.Eletrica - ArqSisComp\hardware\";
+                openFileDialog.Filter = "Arquivos de Texto (*.txt)|*.txt|Todos os arquivos (*.*)|*.*";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
+                openFileDialog.Title = "Selecione o arquivo compilado (.txt) para gravar no MSP";
 
-            // 2. Defina a porta COM que você deseja usar (ex: COM3)
-            string comPort = selected_port;
-
-            // 3. Monta a string de argumentos exatamente no formato comentado:
-            // Formatado como: "C:\BSLDEMO-2.01c.exe -cCOM3 -m1 -ij -s2 +epr "C:\Caminho\Para\O\Arquivo.txt"
-            //string arguments = $"\"$bsl\" \"-c{comPort}\" -m1 -ij -s2 +epr \"{pathfile}\"";
-            string arguments = $"-c{comPort} -m1 -ij -s2 +epr {pathfile}";
-
-            try {
-                DoDesconnection();
-                // 4. Configura a inicialização do processo
-                ProcessStartInfo startInfo = new ProcessStartInfo();
-                startInfo.FileName = execmd;       // O executável
-                startInfo.Arguments = arguments;   // Os argumentos/parâmetros
-
-                // Opcional: Oculta a janela preta do CMD se preferir, ou deixe false para ver o BSL rodando
-                startInfo.CreateNoWindow = false;
-                startInfo.UseShellExecute = false;
-
-                Console.WriteLine($"Executando:");
-                Console.WriteLine($"{execmd} {arguments}");
-
-                // 5. Executa o processo
-                using (Process process = Process.Start(startInfo)) {
-                    // Opcional: Faz o seu programa C# esperar o BSL terminar antes de continuar
-                    process.WaitForExit();
-
-                    MessageBox.Show("Processo de gravação finalizado!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Se o usuário cancelar ou fechar a janela de seleção, interrompe a execução
+                if (openFileDialog.ShowDialog() != DialogResult.OK) {
+                    return;
                 }
-            } catch (Exception ex) {
-                MessageBox.Show($"Erro ao executar o BSLDEMO: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            } finally {
-                DoConnection(comPort); // Reconnect after writing to MSP
+
+                // Caminho do arquivo selecionado pelo usuário
+                string pathfile = openFileDialog.FileName;
+                string execmd = @"C:\BSLDEMO-2.01c.exe";
+                string comPort = selected_port;
+
+                // Validação caso não haja porta selecionada
+                if (string.IsNullOrEmpty(comPort)) {
+                    MessageBox.Show("Por favor, selecione uma porta COM antes de gravar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // 2. Monta os argumentos envolvendo o caminho do arquivo entre aspas duplas
+                // É como eu pensava, caminhos com espaços tem que estar entre aspas duplas.
+                string arguments = $"-c{comPort} -m1 -ij -s2 +epr \"{pathfile}\"";
+
+                try {
+                    // Desconecta a porta serial para liberar o BSLDEMO
+                    DoDesconnection();
+
+                    // 3. Configura a inicialização do processo externo
+                    ProcessStartInfo startInfo = new ProcessStartInfo();
+                    startInfo.FileName = execmd;       // O executável
+                    startInfo.Arguments = arguments;   // Os argumentos/parâmetros
+
+                    // Define o UseShellExecute como false para permitir manipulações limpas de processo
+                    startInfo.UseShellExecute = false;
+                    startInfo.CreateNoWindow = false;  // Mantém visível para você ver o progresso do BSLDEMO
+
+                    Console.WriteLine($"Executando:");
+                    Console.WriteLine($"{execmd} {arguments}");
+
+                    // 4. Executa o BSLDEMO
+                    using (Process process = Process.Start(startInfo)) {
+                        if (process != null) {
+                            // Espera o BSL terminar antes de reabrir a porta serial no C#
+                            process.WaitForExit();
+                            MessageBox.Show("Processo de gravação finalizado!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                } catch (Exception ex) {
+                    MessageBox.Show($"Erro ao executar o BSLDEMO: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } finally {
+                    // Garante a reconexão automática com o MSP após fechar o processo
+                    DoConnection(comPort);
+                }
             }
         }
     }
